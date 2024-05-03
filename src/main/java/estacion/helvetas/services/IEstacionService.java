@@ -8,10 +8,6 @@ public interface IEstacionService {
 
     // List<Estacion> buscarPorCompleto(String completo);
 
-    Estacion buscarPorIdEstacion(int idEstacion);
-
-    void eliminarEstacionId(int idEstacion);
-
-    void deleteEstacion(int idEstacion);
+    void deleteById(int idEstacion);
 
 }

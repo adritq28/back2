@@ -35,12 +35,6 @@ public class DatosEstacionServiceJpa implements IDatosEstacion {
         throw new UnsupportedOperationException("Unimplemented method 'eliminarDatosEstacionId'");
     }
 
-    @Override
-    public void deleteDatosEstacion(int idDatosEstacion) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteDatosEstacion'");
-    }
-
     public DatosEstacion obtenerDatosEstacionPorId(int id) {
         Optional<DatosEstacion> datosEstacionOptional = datosEstacionRepo.findById(id);
         return datosEstacionOptional.orElse(null);
@@ -48,6 +42,16 @@ public class DatosEstacionServiceJpa implements IDatosEstacion {
 
     public void guardarDatosEstacion(DatosEstacion datosEstacion) {
         datosEstacionRepo.save(datosEstacion);
+    }
+
+    public void eliminarEstacion(int id) {
+        datosEstacionRepo.deleteById(id);
+    }
+
+    @Override
+    public void deleteById(int idDatosEstacion) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
     }
 
 }

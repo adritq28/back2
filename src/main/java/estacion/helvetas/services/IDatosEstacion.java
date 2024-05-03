@@ -12,6 +12,6 @@ public interface IDatosEstacion {
 
     void eliminarDatosEstacionId(int idDatosEstacion);
 
-    void deleteDatosEstacion(int idDatosEstacion);
+    void deleteById(int idDatosEstacion);
 
 }

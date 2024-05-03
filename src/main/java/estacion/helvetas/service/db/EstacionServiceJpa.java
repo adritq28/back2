@@ -1,7 +1,5 @@
 package estacion.helvetas.service.db;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -17,10 +15,8 @@ public class EstacionServiceJpa implements IEstacionService {
     @Autowired
     private EstacionRepository estacionRepo;
 
-    @Override
-    public Estacion buscarPorIdEstacion(int idEstacion) {
-        Optional<Estacion> estacion = estacionRepo.findById(idEstacion);
-        return estacion.get();
+    public void eliminarEstacion(int id) {
+        estacionRepo.deleteById(id);
     }
 
     @Override
@@ -30,15 +26,9 @@ public class EstacionServiceJpa implements IEstacionService {
     }
 
     @Override
-    public void eliminarEstacionId(int idEstacion) {
+    public void deleteById(int idEstacion) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'eliminarEstacionId'");
-    }
-
-    @Override
-    public void deleteEstacion(int idEstacion) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteEstacion'");
+        throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
     }
 
 }
