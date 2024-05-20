@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 
 import estacion.helvetas.model.DatosEstacion;
 import estacion.helvetas.repository.DatosEstacionRepository;
-import estacion.helvetas.services.IDatosEstacion;
+import estacion.helvetas.services.IDatosEstacionService;
 
 @Service
 @Primary
-public class DatosEstacionServiceJpa implements IDatosEstacion {
+public class DatosEstacionServiceJpa implements IDatosEstacionService {
 
     @Autowired
     private DatosEstacionRepository datosEstacionRepo;

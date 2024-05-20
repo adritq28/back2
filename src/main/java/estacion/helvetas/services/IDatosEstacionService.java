@@ -2,11 +2,9 @@ package estacion.helvetas.services;
 
 import estacion.helvetas.model.DatosEstacion;
 
-public interface IDatosEstacion {
+public interface IDatosEstacionService {
 
     void guardar(DatosEstacion estacion);
-
-    // List<Estacion> buscarPorCompleto(String completo);
 
     DatosEstacion buscarPorIdDatosEstacion(int idDatosEstacion);
 

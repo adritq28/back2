@@ -18,27 +18,24 @@ public class Estacion {
     private Integer idEstacion;
     @Column(name = "nombre")
     private String nombre;
+    @Column(name = "latitud")
+    private String latitud;
+    @Column(name = "longitud")
+    private String longitud;
+    @Column(name = "altura")
+    private String altura;
     @Column(name = "estado")
     private boolean estado;
     @Column(name = "tipo_estacion")
     private String tipoEstacion;
-    @Column(name = "coordenadas")
-    private String coordenadas;
-    @Column(name = "imagen")
-    private String imagen;
-    @Column(name = "id_datos_est")
-    private Integer idDatosEst;
-    @Column(name = "id_observador")
-    private Integer idObservador;
     @Column(name = "id_municipio")
     private Integer idMunicipio;
 
     @Override
     public String toString() {
-        return "Estacion [idEstacion=" + idEstacion + ", nombre=" + nombre + ", estado=" + estado
-                + ", tipoEstacion=" + tipoEstacion + ", coordenadas=" + coordenadas + ", imagen=" + imagen
-                + ", idDatosEst=" + idDatosEst +
-                ", idObservador=" + idObservador + ", idMunicipio=" + idMunicipio + "]";
+        return "Estacion [idEstacion=" + idEstacion + ", nombre=" + nombre + ", latitud=" + latitud
+                + ", longitud=" + longitud + ", altura=" + altura + ", estado=" + estado
+                + ", tipoEstacion=" + tipoEstacion + ", idMunicipio=" + idMunicipio + "]";
     }
 
 }

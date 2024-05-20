@@ -6,8 +6,6 @@ public interface IEstacionService {
 
     void guardar(Estacion estacion);
 
-    // List<Estacion> buscarPorCompleto(String completo);
-
     void deleteById(int idEstacion);
 
 }

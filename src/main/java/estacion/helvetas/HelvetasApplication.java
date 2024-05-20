@@ -8,17 +8,19 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import estacion.helvetas.controller.DatosEstacionController;
-import estacion.helvetas.controller.personaController;
+import estacion.helvetas.controller.UsuarioController;
 import estacion.helvetas.model.DatosEstacion;
-import estacion.helvetas.model.persona;
+import estacion.helvetas.repository.UsuarioRepository;
 
 @SpringBootApplication
 public class HelvetasApplication implements CommandLineRunner {
 
 	@Autowired
-	private personaController controller;
+	private UsuarioController controller;
 	@Autowired
 	private DatosEstacionController controller2;
+	@Autowired
+	private UsuarioRepository usurepo;
 
 	public static void main(String[] args) {
 		SpringApplication.run(HelvetasApplication.class, args);
@@ -28,20 +30,24 @@ public class HelvetasApplication implements CommandLineRunner {
 		// buscarTodosDocenteJpa();
 		// buscarTodosPersonaJpa();
 		System.out.println("_____corre_________");
-		mostrarper();
+		mostrarUsuario();
 		mostraDatosEstacion();
-		// buscarPorIdFacultad();
-		// buscarTodosFacultadesJpa2();
-		// existeId();
-		// buscarTodosCarrera();
-		// buscarUltimoPersona();
-		// buscarTodosAdministrativosJpa();
-		// buscarporCI(); no funca :''v
 
 	}
 
-	private void mostrarper() {
-		List<persona> persona = controller.mostrarlistarPersonas();
+	private void mostrarUsuario() {
+		// Suponiendo que usuarioRepository está inyectado en tu clase o que puedes
+		// acceder a él de alguna manera
+		List<Object[]> l = usurepo.buscarUsuariosConEstacion();
+
+		// Ahora puedes manipular la lista 'l' como lo desees
+		for (Object[] usuario : l) {
+			for (Object elemento : usuario) {
+				System.out.print(elemento + " ");
+			}
+			System.out.println(); // Salto de línea después de imprimir todos los elementos de un usuario con
+									// estación
+		}
 	}
 
 	private void mostraDatosEstacion() {

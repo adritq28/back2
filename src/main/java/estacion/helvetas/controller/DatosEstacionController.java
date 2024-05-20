@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import estacion.helvetas.model.DatosEstacion;
 import estacion.helvetas.repository.DatosEstacionRepository;
 import estacion.helvetas.service.db.DatosEstacionServiceJpa;
-import estacion.helvetas.services.IDatosEstacion;
+import estacion.helvetas.services.IDatosEstacionService;
 
 @CrossOrigin(origins = "*")
 // @RestController
@@ -33,7 +33,7 @@ public class DatosEstacionController {
     private DatosEstacionRepository datosEstacionRepository;
 
     @Autowired
-    private IDatosEstacion serviceEstacion;
+    private IDatosEstacionService serviceEstacion;
     @Autowired
     private DatosEstacionServiceJpa estacionService;
 
@@ -88,30 +88,6 @@ public class DatosEstacionController {
         }
     }
 
-    // @RequestMapping("/editar/{id}")
-    // public ModelAndView editarDatosEstacion(@PathVariable("id") int idEstacion) {
-    // System.out.println( "ENTRA AL MODEL");
-    // ModelAndView model = new ModelAndView("estacion/editar");
-
-    // DatosEstacion estacion = new DatosEstacion();
-    // estacion = serviceEstacion.buscarPorIdDatosEstacion(idEstacion);
-    // System.out.println("++++++" + estacion.toString());
-    // model.addObject("estacion", estacion);
-    // System.out.println("SALE DE MODEL");
-    // return model;
-    // }
-
-    // @GetMapping("/{id}")
-    // public ResponseEntity<DatosEstacion>
-    // obtenerDatosEstacionPorId(@PathVariable("id") int id) {
-    // DatosEstacion datosEstacion = serviceEstacion2.obtenerDatosEstacionPorId(id);
-    // if (datosEstacion != null) {
-    // return ResponseEntity.ok(datosEstacion);
-    // } else {
-    // return ResponseEntity.notFound().build();
-    // }
-    // }
-
     @PutMapping("/{id}")
     public ResponseEntity<DatosEstacion> actualizarDatosEstacion(@PathVariable("id") int id,
             @RequestBody DatosEstacion datosEstacionActualizado) {
@@ -120,14 +96,15 @@ public class DatosEstacionController {
             // Actualizar los campos del objeto datosEstacion con los datos proporcionados
             // en datosEstacionActualizado
             // System.out.println("++++++" + estacion.toString());
-            datosEstacion.setCoordenada(datosEstacionActualizado.getCoordenada());
-            datosEstacion.setDirVelViento(datosEstacionActualizado.getDirVelViento());
-            datosEstacion.setFechaDatos(datosEstacionActualizado.getFechaDatos());
-            datosEstacion.setPcpn(datosEstacionActualizado.getPcpn());
-            datosEstacion.setTaevap(datosEstacionActualizado.getTaevap());
-            datosEstacion.setTempAmb(datosEstacionActualizado.getTempAmb());
             datosEstacion.setTempMax(datosEstacionActualizado.getTempMax());
             datosEstacion.setTempMin(datosEstacionActualizado.getTempMin());
+            datosEstacion.setTempAmb(datosEstacionActualizado.getTempAmb());
+            datosEstacion.setPcpn(datosEstacionActualizado.getPcpn());
+            datosEstacion.setTaevap(datosEstacionActualizado.getTaevap());
+            datosEstacion.setFechaReg(datosEstacionActualizado.getFechaReg());
+            datosEstacion.setDirViento(datosEstacionActualizado.getDirViento());
+            datosEstacion.setVelViento(datosEstacionActualizado.getVelViento());
+            datosEstacion.setIdEstacion(datosEstacionActualizado.getIdEstacion());
 
             // Guardar los cambios en la base de datos
             serviceEstacion2.guardarDatosEstacion(datosEstacion);
@@ -148,14 +125,16 @@ public class DatosEstacionController {
             if (datosEstacionExistente2 != null) {
                 DatosEstacion datosEstacion = datosEstacionExistente2.get();
                 // Actualiza los campos de la estación con los nuevos datos
-                datosEstacion.setCoordenada(datosEstacionActualizados.getCoordenada());
-                datosEstacion.setDirVelViento(datosEstacionActualizados.getDirVelViento());
-                datosEstacion.setFechaDatos(datosEstacionActualizados.getFechaDatos());
-                datosEstacion.setPcpn(datosEstacionActualizados.getPcpn());
-                datosEstacion.setTaevap(datosEstacionActualizados.getTaevap());
-                datosEstacion.setTempAmb(datosEstacionActualizados.getTempAmb());
+
                 datosEstacion.setTempMax(datosEstacionActualizados.getTempMax());
                 datosEstacion.setTempMin(datosEstacionActualizados.getTempMin());
+                datosEstacion.setTempAmb(datosEstacionActualizados.getTempAmb());
+                datosEstacion.setPcpn(datosEstacionActualizados.getPcpn());
+                datosEstacion.setTaevap(datosEstacionActualizados.getTaevap());
+                datosEstacion.setFechaReg(datosEstacionActualizados.getFechaReg());
+                datosEstacion.setDirViento(datosEstacionActualizados.getDirViento());
+                datosEstacion.setVelViento(datosEstacionActualizados.getVelViento());
+                datosEstacion.setIdEstacion(datosEstacionActualizados.getIdEstacion());
                 // Actualiza otros campos según sea necesario
 
                 // Guarda la estación actualizada en la base de datos

@@ -18,29 +18,11 @@ public class personaServiceJpa implements IPersonaServices {
     @Autowired
     private personaRepository personaRepo;
 
-    /*
-     * @Override
-     * public Page<List<Persona>> buscarTodas(String s, Pageable pageable) {
-     * if(s != null) {
-     * return personaRepo.findAll(s, pageable);
-     * }
-     * return personaRepo.findAll(pageable);
-     * }
-     */
-
     @Override
     public persona buscarPorIdPersona(int idPersona) {
         Optional<persona> persona = personaRepo.findById(idPersona);
         return persona.get();
     }
-
-    ///
-    // @Override
-    // public persona buscarPorCiPersona(int ciPersona) {
-    // Optional<persona> persona = personaRepo.findByCi(ciPersona);
-    // return persona.get();
-    // }
-    ///
 
     @Override
     public void deletePersona(int idPersona) {

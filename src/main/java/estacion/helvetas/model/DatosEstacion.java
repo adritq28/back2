@@ -1,8 +1,5 @@
 package estacion.helvetas.model;
 
-//import java.sql.Date;
-//import java.sql.Date;
-import java.sql.Timestamp;
 import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -25,39 +22,44 @@ public class DatosEstacion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_datos_est")
     private Integer idDatosEst;
-    @Column(name = "coordenada")
-    private String coordenada;
-    @Column(name = "dir_vel_viento")
-    private Float dirVelViento;
-    @Column(name = "fecha_datos")
-    private Timestamp fechaDatos;
-    @Column(name = "pcpn")
-    private Float pcpn;
-    @Column(name = "taevap")
-    private Float taevap;
-    @Column(name = "temp_amb")
-    private Float tempAmb;
     @Column(name = "temp_max")
     private Float tempMax;
     @Column(name = "temp_min")
     private Float tempMin;
+    @Column(name = "temp_amb")
+    private Float tempAmb;
+    @Column(name = "pcpn")
+    private Float pcpn;
+    @Column(name = "taevap")
+    private Float taevap;
+    // @Column(name = "fecha_reg")
+    // private Timestamp fechaReg;
+    @Column(name = "dir_viento")
+    private String dirViento;
+    @Column(name = "vel_viento")
+    private Float velViento;
+    @Column(name = "id_estacion")
+    private Integer idEstacion;
 
-    @Column(name = "fechados")
+    @Column(name = "fecha_reg")
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private Date fechados = new Date(System.currentTimeMillis());
+    private Date fechaReg = new Date(System.currentTimeMillis());
 
     @Override
     public String toString() {
         return "DatosEstacion [idDatosEstacion=" + idDatosEst +
-                ", coordenada=" + coordenada +
-                ", dirVelViento=" + dirVelViento +
-                ", fechaDatos=" + fechaDatos +
+                ", tempMax=" + tempMax +
+                ", tempMin=" + tempMin +
+                ", tempAmb=" + tempAmb +
                 ", pcpn=" + pcpn +
                 ", taevap=" + taevap +
-                ", tempAmb=" + tempAmb +
-                ", tempMax=" + tempMax +
-                ", tempMin=" + tempMin + "]";
+                ", fechaReg=" + fechaReg +
+                ", dirViento=" + velViento +
+                ", velViento=" + velViento +
+                ", idEstacion=" + idEstacion +
+
+                "]";
     }
 
     // public void setFechados(Date fechados) {
