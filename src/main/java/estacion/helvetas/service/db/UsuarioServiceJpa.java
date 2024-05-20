@@ -50,4 +50,8 @@ public class UsuarioServiceJpa implements IUsuarioService {
         return usuarioRepo.buscarUsuariosConEstacion();
     }
 
+    public List<Object[]> obtenerDatosEstacion() {
+        return usuarioRepo.obtenerDatosEstacion();
+    }
+
 }

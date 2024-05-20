@@ -69,7 +69,6 @@ public class UsuarioController {
             usuario.put("telefono", usuarioConEstacion[5]);
             usuariosConEstacion.add(usuario);
         }
-
         return usuariosConEstacion;
     }
 
