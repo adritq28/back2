@@ -17,6 +17,9 @@ public class DatosEstacionServiceJpa implements IDatosEstacionService {
     @Autowired
     private DatosEstacionRepository datosEstacionRepo;
 
+    // @Autowired
+    // private DatosEstacionDTORepository datosEstacionRepo2;
+
     @Override
     public DatosEstacion buscarPorIdDatosEstacion(int idDatosEstacion) {
         Optional<DatosEstacion> datosEstacion = datosEstacionRepo.findById(idDatosEstacion);
@@ -40,6 +43,12 @@ public class DatosEstacionServiceJpa implements IDatosEstacionService {
         return datosEstacionOptional.orElse(null);
     }
 
+    // public DatosEstacion obtenerDatosEstacionPorId(int id) {
+    // Optional<DatosEstacion> datosEstacionOptional =
+    // datosEstacionRepo.findById(id);
+    // return datosEstacionOptional.orElse(null);
+    // }
+
     public void guardarDatosEstacion(DatosEstacion datosEstacion) {
         datosEstacionRepo.save(datosEstacion);
     }
@@ -54,4 +63,13 @@ public class DatosEstacionServiceJpa implements IDatosEstacionService {
         throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
     }
 
+    // public Optional<DatosEstacionDTO> obtenerDatosEstacionPorId2(int id) {
+    // return datosEstacionRepo2.obtenerDatosEstacionPorId2(id);
+    // }
+
+    // public DatosEstacionDTO obtenerDatosEstacionPorId2(int id) {
+    // Optional<DatosEstacionDTO> datosEstacionDTOOptional =
+    // datosEstacionRepo.findById(id);
+    // return datosEstacionOptional.orElse(null);
+    // }
 }

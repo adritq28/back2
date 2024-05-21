@@ -1,6 +1,10 @@
 package estacion.helvetas.controller;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import estacion.helvetas.model.DatosEstacion;
+import estacion.helvetas.model.DatosEstacionDTO;
 import estacion.helvetas.repository.DatosEstacionRepository;
+import estacion.helvetas.repository.UsuarioRepository;
 import estacion.helvetas.service.db.DatosEstacionServiceJpa;
-import estacion.helvetas.services.IDatosEstacionService;
 
 @CrossOrigin(origins = "*")
 // @RestController
@@ -31,14 +36,93 @@ public class DatosEstacionController {
 
     @Autowired
     private DatosEstacionRepository datosEstacionRepository;
-
     @Autowired
-    private IDatosEstacionService serviceEstacion;
+    private UsuarioRepository usuarioRepository;
+
+    // @Autowired
+    // private DatosEstacionDTORepository datosEstacionRepository2;
+
     @Autowired
     private DatosEstacionServiceJpa estacionService;
 
     @Autowired
-    private DatosEstacionServiceJpa serviceEstacion2;
+    private DatosEstacionServiceJpa serviceEstacion;
+
+    @Autowired
+    private DatosEstacionRepository datosRepository;
+
+    @GetMapping("/verDatosEstacion")
+    public List<Map<String, Object>> obtenerDatosEstacion() {
+
+        List<Map<String, Object>> datosEst = new ArrayList<>();
+        List<Object[]> listadatos = datosRepository.obtenerDatosEstacion();
+
+        // List<Object[]> results = query.getResultList();
+        // List<Map<String, Object>> datosEstacion = new ArrayList<>();
+
+        for (Object[] result : listadatos) {
+            Map<String, Object> datos = new HashMap<>();
+            // datos.put("id", result[0]);
+            datos.put("idUsuario", result[0]);
+            datos.put("nombreMunicipio", result[1]);
+            datos.put("nombreEstacion", result[2]);
+            datos.put("tipoEstacion", result[3]);
+            datos.put("nombreCompleto", result[4]);
+            datos.put("fechaReg", result[5]);
+            datos.put("tempMin", result[6]);
+            datos.put("tempMax", result[7]);
+            datosEst.add(datos);
+        }
+
+        return datosEst;
+    }
+
+    // @GetMapping("/{id}")
+    // public ResponseEntity<DatosEstacionDTO> obtenerDatosObservador(@PathVariable
+    // int id) {
+    // DatosEstacionDTO observador = observadorService.obtenerObservadorPorId(id);
+    // DatosEstacionDTO observador = datosEstacionRepository.obtenerDatosEstacion().
+    // if (observador != null) {
+    // return ResponseEntity.ok(observador);
+    // } else {
+    // return ResponseEntity.notFound().build();
+    // }
+    // }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DatosEstacionDTO> obtenerDatosObservador(@PathVariable int id) {
+        List<Object[]> resultados = datosEstacionRepository.obtenerDatosEstacion();
+
+        // Buscar el observador con el ID proporcionado en los resultados
+        for (Object[] resultado : resultados) {
+            int idUsuario = (int) resultado[0];
+            if (idUsuario == id) {
+                // Construir el objeto DatosEstacionDTO utilizando los datos del resultado
+                DatosEstacionDTO observador = new DatosEstacionDTO();
+                observador.setIdUsuario(idUsuario);
+                observador.setMunicipio((String) resultado[1]);
+                observador.setEstacion((String) resultado[2]);
+                observador.setTipoEstacion((String) resultado[3]);
+                observador.setNombreCompleto((String) resultado[4]);
+                observador.setFechaReg((Timestamp) resultado[5]);
+                observador.setTempMin((Float) resultado[6]);
+                observador.setTempMax((Float) resultado[7]);
+                observador.setTempAmb((Float) resultado[8]);
+                observador.setPcpn((Float) resultado[9]);
+                observador.setTaevap((Float) resultado[10]);
+                observador.setDirViento((String) resultado[11]);
+                observador.setVelViento((Float) resultado[12]);
+                // Asignar otros campos según sea necesario
+                // ...
+
+                return ResponseEntity.ok(observador);
+            }
+        }
+
+        // Si no se encuentra el observador con el ID proporcionado, devolver 404 Not
+        // Found
+        return ResponseEntity.notFound().build();
+    }
 
     public List<DatosEstacion> mostrarlistarEstacion() {
         // public String mostrarlistarPersonas() {
@@ -53,7 +137,6 @@ public class DatosEstacionController {
         return datosEstacions;
     }
 
-    // @GetMapping
     @GetMapping("/listaDatosEstacion")
     public List<DatosEstacion> listarDatosEstacion() {
 
@@ -91,9 +174,10 @@ public class DatosEstacionController {
     @PutMapping("/{id}")
     public ResponseEntity<DatosEstacion> actualizarDatosEstacion(@PathVariable("id") int id,
             @RequestBody DatosEstacion datosEstacionActualizado) {
-        DatosEstacion datosEstacion = serviceEstacion2.obtenerDatosEstacionPorId(id);
+        DatosEstacion datosEstacion = serviceEstacion.obtenerDatosEstacionPorId(id);
         if (datosEstacion != null) {
-            // Actualizar los campos del objeto datosEstacion con los datos proporcionados
+            // Actualizar los campos del objeto datosEstacion con los datos
+
             // en datosEstacionActualizado
             // System.out.println("++++++" + estacion.toString());
             datosEstacion.setTempMax(datosEstacionActualizado.getTempMax());
@@ -107,7 +191,7 @@ public class DatosEstacionController {
             datosEstacion.setIdEstacion(datosEstacionActualizado.getIdEstacion());
 
             // Guardar los cambios en la base de datos
-            serviceEstacion2.guardarDatosEstacion(datosEstacion);
+            serviceEstacion.guardarDatosEstacion(datosEstacion);
             return ResponseEntity.ok(datosEstacion);
         } else {
             return ResponseEntity.notFound().build();

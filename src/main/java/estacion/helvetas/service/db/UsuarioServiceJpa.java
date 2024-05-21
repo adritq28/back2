@@ -46,12 +46,4 @@ public class UsuarioServiceJpa implements IUsuarioService {
         throw new UnsupportedOperationException("Unimplemented method 'guardar'");
     }
 
-    public List<Object[]> obtenerUsuariosConEstacion() {
-        return usuarioRepo.buscarUsuariosConEstacion();
-    }
-
-    public List<Object[]> obtenerDatosEstacion() {
-        return usuarioRepo.obtenerDatosEstacion();
-    }
-
 }
