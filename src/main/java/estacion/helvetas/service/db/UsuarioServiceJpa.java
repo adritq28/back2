@@ -18,6 +18,10 @@ public class UsuarioServiceJpa implements IUsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepo;
 
+    public String obtenerTelefonoPorIdUsuario(int idUsuario) {
+        return usuarioRepo.findTelefonoByIdUsuario(idUsuario);
+    }
+
     @Override
     public Usuario buscarPorIdUsuario(int idUsuario) {
         Optional<Usuario> usuario = usuarioRepo.findById(idUsuario);

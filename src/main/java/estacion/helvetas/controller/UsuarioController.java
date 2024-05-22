@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import estacion.helvetas.model.Usuario;
 import estacion.helvetas.repository.UsuarioRepository;
+import estacion.helvetas.service.db.UsuarioServiceJpa;
 
 @CrossOrigin(origins = "*")
 // @RestController
@@ -29,6 +31,9 @@ import estacion.helvetas.repository.UsuarioRepository;
 public class UsuarioController {
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private UsuarioServiceJpa usuarioService;
 
     // @GetMapping
     @GetMapping("/sol")
@@ -139,5 +144,10 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error al guardar la usuario: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/telefono/{idUsuario}")
+    public String obtenerTelefono(@PathVariable int idUsuario) {
+        return usuarioService.obtenerTelefonoPorIdUsuario(idUsuario);
     }
 }
