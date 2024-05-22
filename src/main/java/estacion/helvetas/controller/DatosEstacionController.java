@@ -2,9 +2,7 @@ package estacion.helvetas.controller;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,49 +49,13 @@ public class DatosEstacionController {
     @Autowired
     private DatosEstacionRepository datosRepository;
 
-    @GetMapping("/verDatosEstacion")
-    public List<Map<String, Object>> obtenerDatosEstacion() {
-
-        List<Map<String, Object>> datosEst = new ArrayList<>();
-        List<Object[]> listadatos = datosRepository.obtenerDatosEstacion();
-
-        // List<Object[]> results = query.getResultList();
-        // List<Map<String, Object>> datosEstacion = new ArrayList<>();
-
-        for (Object[] result : listadatos) {
-            Map<String, Object> datos = new HashMap<>();
-            // datos.put("id", result[0]);
-            datos.put("idUsuario", result[0]);
-            datos.put("nombreMunicipio", result[1]);
-            datos.put("nombreEstacion", result[2]);
-            datos.put("tipoEstacion", result[3]);
-            datos.put("nombreCompleto", result[4]);
-            datos.put("fechaReg", result[5]);
-            datos.put("tempMin", result[6]);
-            datos.put("tempMax", result[7]);
-            datosEst.add(datos);
-        }
-
-        return datosEst;
-    }
-
-    // @GetMapping("/{id}")
-    // public ResponseEntity<DatosEstacionDTO> obtenerDatosObservador(@PathVariable
-    // int id) {
-    // DatosEstacionDTO observador = observadorService.obtenerObservadorPorId(id);
-    // DatosEstacionDTO observador = datosEstacionRepository.obtenerDatosEstacion().
-    // if (observador != null) {
-    // return ResponseEntity.ok(observador);
-    // } else {
-    // return ResponseEntity.notFound().build();
-    // }
-    // }
-
     @GetMapping("/{id}")
-    public ResponseEntity<DatosEstacionDTO> obtenerDatosObservador(@PathVariable int id) {
-        List<Object[]> resultados = datosEstacionRepository.obtenerDatosEstacion();
+    public ResponseEntity<List<DatosEstacionDTO>> obtenerDatosObservador(@PathVariable int id) {
+        List<Object[]> resultados = datosEstacionRepository.obtenerDatosEstacion(id);
+        List<DatosEstacionDTO> observadores = new ArrayList<>();
 
-        // Buscar el observador con el ID proporcionado en los resultados
+        // Buscar el observador con el ID proporcionado en los resultados y acumular en
+        // la lista
         for (Object[] resultado : resultados) {
             int idUsuario = (int) resultado[0];
             if (idUsuario == id) {
@@ -112,16 +74,23 @@ public class DatosEstacionController {
                 observador.setTaevap((Float) resultado[10]);
                 observador.setDirViento((String) resultado[11]);
                 observador.setVelViento((Float) resultado[12]);
+                observador.setIdEstacion((int) resultado[13]);
                 // Asignar otros campos según sea necesario
                 // ...
 
-                return ResponseEntity.ok(observador);
+                // Añadir el objeto a la lista
+                observadores.add(observador);
             }
         }
 
-        // Si no se encuentra el observador con el ID proporcionado, devolver 404 Not
+        // Si no se encuentran observadores con el ID proporcionado, devolver 404 Not
         // Found
-        return ResponseEntity.notFound().build();
+        if (observadores.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // Devolver la lista de observadores encontrados
+        return ResponseEntity.ok(observadores);
     }
 
     public List<DatosEstacion> mostrarlistarEstacion() {

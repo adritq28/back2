@@ -64,6 +64,7 @@ public class UsuarioController {
             usuario.put("tipoEstacion", usuarioConEstacion[3]);
             usuario.put("nombreCompleto", usuarioConEstacion[4]);
             usuario.put("telefono", usuarioConEstacion[5]);
+            usuario.put("idEstacion", usuarioConEstacion[6]);
             usuariosConEstacion.add(usuario);
         }
         return usuariosConEstacion;

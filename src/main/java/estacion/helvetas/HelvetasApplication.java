@@ -35,7 +35,7 @@ public class HelvetasApplication implements CommandLineRunner {
 		System.out.println("_____corre_________");
 		// mostrarUsuario();
 		// mostraDatosEstacion();
-		mostrardatos();
+		// mostrardatos();
 
 	}
 
@@ -54,20 +54,21 @@ public class HelvetasApplication implements CommandLineRunner {
 		}
 	}
 
-	private void mostrardatos() {
-		// Suponiendo que usuarioRepository está inyectado en tu clase o que puedes
-		// acceder a él de alguna manera
-		List<Object[]> l = datosrepo.obtenerDatosEstacion();
+	// private void mostrardatos() {
+	// // Suponiendo que usuarioRepository está inyectado en tu clase o que puedes
+	// // acceder a él de alguna manera
+	// List<Object[]> l = datosrepo.obtenerDatosEstacion();
 
-		// Ahora puedes manipular la lista 'l' como lo desees
-		for (Object[] usuario : l) {
-			for (Object elemento : usuario) {
-				System.out.print(elemento + " ");
-			}
-			System.out.println(); // Salto de línea después de imprimir todos los elementos de un usuario con
-									// estación
-		}
-	}
+	// // Ahora puedes manipular la lista 'l' como lo desees
+	// for (Object[] usuario : l) {
+	// for (Object elemento : usuario) {
+	// System.out.print(elemento + " ");
+	// }
+	// System.out.println(); // Salto de línea después de imprimir todos los
+	// elementos de un usuario con
+	// // estación
+	// }
+	// }
 
 	private void mostraDatosEstacion() {
 		List<DatosEstacion> datosEstacion = controller2.mostrarlistarEstacion();
