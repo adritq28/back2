@@ -75,63 +75,6 @@ public class UsuarioController {
         return usuariosConEstacion;
     }
 
-    // @PutMapping("/irDatosEstacion/{id}")
-    // public ResponseEntity<String> irDatosEstacion(@PathVariable("id") int id,
-    // @RequestBody DatosEstacionDTO irDatosEstacion) {
-    // try {
-    // Optional<DatosEstacionDTO> datosEstacionExistente =
-    // datosRepository2.obtenerDatosEstacionPorId2(id);
-    // if (datosEstacionExistente.isPresent()) {
-    // DatosEstacionDTO datosEstacion = datosEstacionExistente.get();
-    // // Obtener los valores de tempMax y tempMin del objeto irDatosEstacion
-    // int idUsuario = irDatosEstacion.getIdUsuario();
-    // String municipio = irDatosEstacion.getMunicipio();
-    // String estacion = irDatosEstacion.getEstacion();
-    // String tipoE = irDatosEstacion.getTipoEstacion();
-    // String nombre = irDatosEstacion.getNombreCompleto();
-    // Date fecha = irDatosEstacion.getFechaReg();
-    // Double tempMax = irDatosEstacion.getTempMax();
-    // Double tempMin = irDatosEstacion.getTempMin();
-    // // Ahora puedes usar tempMax y tempMin según sea necesario
-
-    // // Guarda la estación actualizada en la base de datos
-    // // Código para guardar los datos actualizados
-    // return ResponseEntity.status(HttpStatus.OK)
-    // .body("Datos de la estación actualizados con éxito. ID: " +
-    // datosEstacion.getIdUsuario());
-    // } else {
-    // return ResponseEntity.status(HttpStatus.NOT_FOUND)
-    // .body("No se encontró la estación con ID: " + id);
-    // }
-    // } catch (Exception e) {
-    // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-    // .body("Error al actualizar los datos de la estación: " + e.getMessage());
-    // }
-    // }
-
-    @GetMapping("/solucion")
-    public ResponseEntity<Map<String, Object>> getAll() {
-        Map<String, Object> response = new HashMap<>();
-        try {
-
-            List<Usuario> listUsuario = usuarioRepository.findAll();
-            List<String> bajasList = new ArrayList<>();
-            bajasList.add("Alina");
-            bajasList.add("Erika");
-            bajasList.add("Ramirez");
-            bajasList.add("Castro");
-            // bajaService.findAll().forEach(bajasList::add);
-            // logger.info("Lista de Baja Inmuebles");
-            // logger.info(bajasList);
-            response.put("persona", bajasList);
-            response.put("personas", listUsuario);
-            response.put("mensaje", "Lista de bajas de inmuebles");
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            response.put("mensaje", "No se encontraron registros");
-            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-        }
-    }
 
     @PostMapping("/add")
     public ResponseEntity<String> guardarUsuario(@RequestBody Usuario usuario) {

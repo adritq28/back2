@@ -43,12 +43,6 @@ public class DatosEstacionServiceJpa implements IDatosEstacionService {
         return datosEstacionOptional.orElse(null);
     }
 
-    // public DatosEstacion obtenerDatosEstacionPorId(int id) {
-    // Optional<DatosEstacion> datosEstacionOptional =
-    // datosEstacionRepo.findById(id);
-    // return datosEstacionOptional.orElse(null);
-    // }
-
     public void guardarDatosEstacion(DatosEstacion datosEstacion) {
         datosEstacionRepo.save(datosEstacion);
     }

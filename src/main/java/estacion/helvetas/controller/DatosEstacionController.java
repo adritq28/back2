@@ -2,7 +2,9 @@ package estacion.helvetas.controller;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import estacion.helvetas.model.DatosEstacion;
 import estacion.helvetas.model.DatosEstacionDTO;
 import estacion.helvetas.repository.DatosEstacionRepository;
+import estacion.helvetas.repository.MunicipioRepository;
 import estacion.helvetas.repository.UsuarioRepository;
 import estacion.helvetas.service.db.DatosEstacionServiceJpa;
 
@@ -48,6 +51,8 @@ public class DatosEstacionController {
 
     @Autowired
     private DatosEstacionRepository datosRepository;
+    @Autowired
+    private MunicipioRepository muniRepository;
 
     @GetMapping("/{id}")
     public ResponseEntity<List<DatosEstacionDTO>> obtenerDatosObservador(@PathVariable int id) {
@@ -91,6 +96,65 @@ public class DatosEstacionController {
 
         // Devolver la lista de observadores encontrados
         return ResponseEntity.ok(observadores);
+    }
+
+    @GetMapping("/datos_municipio/{id}")
+    public ResponseEntity<List<DatosEstacionDTO>> obtenerDatosMunicipio(@PathVariable int id) {
+        List<Object[]> resultados = datosEstacionRepository.obtenerDatosMunicipio(id);
+        List<DatosEstacionDTO> municipio = new ArrayList<>();
+
+        // Buscar el observador con el ID proporcionado en los resultados y acumular en
+        // la lista
+        for (Object[] resultado : resultados) {
+            int idMunicipio = (int) resultado[0];
+            if (idMunicipio == id) {
+                // Construir el objeto DatosEstacionDTO utilizando los datos del resultado
+                DatosEstacionDTO observador = new DatosEstacionDTO();
+                observador.setIdUsuario(idMunicipio);
+                observador.setMunicipio((String) resultado[1]);
+                observador.setEstacion((String) resultado[2]);
+                observador.setTipoEstacion((String) resultado[3]);
+                observador.setNombreCompleto((String) resultado[4]);
+                observador.setFechaReg((Timestamp) resultado[5]);
+                observador.setTempMin((Float) resultado[6]);
+                observador.setTempMax((Float) resultado[7]);
+                observador.setTempAmb((Float) resultado[8]);
+                observador.setPcpn((Float) resultado[9]);
+                observador.setTaevap((Float) resultado[10]);
+                observador.setDirViento((String) resultado[11]);
+                observador.setVelViento((Float) resultado[12]);
+                observador.setIdEstacion((int) resultado[13]);
+                // Asignar otros campos según sea necesario
+                // ...
+
+                // Añadir el objeto a la lista
+                municipio.add(observador);
+            }
+        }
+
+        // Si no se encuentran observadores con el ID proporcionado, devolver 404 Not
+        // Found
+        if (municipio.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // Devolver la lista de observadores encontrados
+        return ResponseEntity.ok(municipio);
+    }
+
+    @GetMapping("/vermunicipios")
+    public List<Map<String, Object>> obtenermunicipio() {
+        List<Map<String, Object>> usuariosConEstacion = new ArrayList<>();
+        List<Object[]> listaUsuariosConEstacion = muniRepository.obtenerIdNombreMunicipios();
+
+        for (Object[] usuarioConEstacion : listaUsuariosConEstacion) {
+            Map<String, Object> usuario = new HashMap<>();
+            usuario.put("idMunicipio", usuarioConEstacion[0]);
+            usuario.put("nombreMunicipio", usuarioConEstacion[1]);
+
+            usuariosConEstacion.add(usuario);
+        }
+        return usuariosConEstacion;
     }
 
     public List<DatosEstacion> mostrarlistarEstacion() {
