@@ -30,12 +30,15 @@ public class Estacion {
     private String tipoEstacion;
     @Column(name = "id_municipio")
     private Integer idMunicipio;
+    @Column(name = "cod_tipo_estacion")
+    private boolean codTipoEstacion;
 
     @Override
     public String toString() {
         return "Estacion [idEstacion=" + idEstacion + ", nombre=" + nombre + ", latitud=" + latitud
                 + ", longitud=" + longitud + ", altura=" + altura + ", estado=" + estado
-                + ", tipoEstacion=" + tipoEstacion + ", idMunicipio=" + idMunicipio + "]";
+                + ", tipoEstacion=" + tipoEstacion + ", idMunicipio=" + idMunicipio + ", codTipoEstacion="
+                + codTipoEstacion + "]";
     }
 
 }

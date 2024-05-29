@@ -20,12 +20,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import estacion.helvetas.model.DatosEstacion;
 import estacion.helvetas.model.DatosEstacionDTO;
-import estacion.helvetas.repository.DatosEstacionRepository;
+import estacion.helvetas.model.DatosEstacionMeteorologica;
+import estacion.helvetas.repository.DatosEstacionMeteorologicaRepository;
 import estacion.helvetas.repository.MunicipioRepository;
 import estacion.helvetas.repository.UsuarioRepository;
-import estacion.helvetas.service.db.DatosEstacionServiceJpa;
+import estacion.helvetas.service.db.DatosEstacionMeteorologicaServiceJpa;
 
 @CrossOrigin(origins = "*")
 // @RestController
@@ -33,10 +33,10 @@ import estacion.helvetas.service.db.DatosEstacionServiceJpa;
 // public class personaController {
 
 @RestController
-public class DatosEstacionController {
+public class DatosEstacionMeteorologicaController {
 
     @Autowired
-    private DatosEstacionRepository datosEstacionRepository;
+    private DatosEstacionMeteorologicaRepository datosEstacionRepository;
     @Autowired
     private UsuarioRepository usuarioRepository;
 
@@ -44,13 +44,13 @@ public class DatosEstacionController {
     // private DatosEstacionDTORepository datosEstacionRepository2;
 
     @Autowired
-    private DatosEstacionServiceJpa estacionService;
+    private DatosEstacionMeteorologicaServiceJpa estacionService;
 
     @Autowired
-    private DatosEstacionServiceJpa serviceEstacion;
+    private DatosEstacionMeteorologicaServiceJpa serviceEstacion;
 
     @Autowired
-    private DatosEstacionRepository datosRepository;
+    private DatosEstacionMeteorologicaRepository datosRepository;
     @Autowired
     private MunicipioRepository muniRepository;
 
@@ -59,12 +59,9 @@ public class DatosEstacionController {
         List<Object[]> resultados = datosEstacionRepository.obtenerDatosEstacion(id);
         List<DatosEstacionDTO> observadores = new ArrayList<>();
 
-        // Buscar el observador con el ID proporcionado en los resultados y acumular en
-        // la lista
         for (Object[] resultado : resultados) {
             int idUsuario = (int) resultado[0];
             if (idUsuario == id) {
-                // Construir el objeto DatosEstacionDTO utilizando los datos del resultado
                 DatosEstacionDTO observador = new DatosEstacionDTO();
                 observador.setIdUsuario(idUsuario);
                 observador.setMunicipio((String) resultado[1]);
@@ -80,21 +77,48 @@ public class DatosEstacionController {
                 observador.setDirViento((String) resultado[11]);
                 observador.setVelViento((Float) resultado[12]);
                 observador.setIdEstacion((int) resultado[13]);
-                // Asignar otros campos según sea necesario
-                // ...
-
-                // Añadir el objeto a la lista
+                observador.setCodTipoEstacion((boolean) resultado[14]);
                 observadores.add(observador);
             }
         }
 
-        // Si no se encuentran observadores con el ID proporcionado, devolver 404 Not
-        // Found
+        if (observadores.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(observadores);
+    }
+
+    @GetMapping("/obtener_estacion/{id}")
+    public ResponseEntity<List<DatosEstacionDTO>> obtenerEstacion(@PathVariable int id) {
+        List<Object[]> resultados = datosEstacionRepository.obtenerEstacion(id);
+        List<DatosEstacionDTO> observadores = new ArrayList<>();
+        for (Object[] resultado : resultados) {
+            int idEstacion = (int) resultado[0];
+            if (idEstacion == id) {
+                DatosEstacionDTO observador = new DatosEstacionDTO();
+                observador.setIdEstacion(idEstacion);
+                observador.setMunicipio((String) resultado[1]);
+                observador.setEstacion((String) resultado[2]);
+                observador.setTipoEstacion((String) resultado[3]);
+                observador.setNombreCompleto((String) resultado[4]);
+                observador.setFechaReg((Timestamp) resultado[5]);
+                observador.setTempMin((Float) resultado[6]);
+                observador.setTempMax((Float) resultado[7]);
+                observador.setTempAmb((Float) resultado[8]);
+                observador.setPcpn((Float) resultado[9]);
+                observador.setTaevap((Float) resultado[10]);
+                observador.setDirViento((String) resultado[11]);
+                observador.setVelViento((Float) resultado[12]);
+                observador.setIdUsuario((int) resultado[13]);
+                observador.setCodTipoEstacion((boolean) resultado[14]);
+                observadores.add(observador);
+            }
+        }
+
         if (observadores.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        // Devolver la lista de observadores encontrados
         return ResponseEntity.ok(observadores);
     }
 
@@ -103,12 +127,9 @@ public class DatosEstacionController {
         List<Object[]> resultados = datosEstacionRepository.obtenerDatosMunicipio(id);
         List<DatosEstacionDTO> municipio = new ArrayList<>();
 
-        // Buscar el observador con el ID proporcionado en los resultados y acumular en
-        // la lista
         for (Object[] resultado : resultados) {
             int idMunicipio = (int) resultado[0];
             if (idMunicipio == id) {
-                // Construir el objeto DatosEstacionDTO utilizando los datos del resultado
                 DatosEstacionDTO observador = new DatosEstacionDTO();
                 observador.setIdUsuario(idMunicipio);
                 observador.setMunicipio((String) resultado[1]);
@@ -124,21 +145,15 @@ public class DatosEstacionController {
                 observador.setDirViento((String) resultado[11]);
                 observador.setVelViento((Float) resultado[12]);
                 observador.setIdEstacion((int) resultado[13]);
-                // Asignar otros campos según sea necesario
-                // ...
-
-                // Añadir el objeto a la lista
+                observador.setCodTipoEstacion((boolean) resultado[14]);
                 municipio.add(observador);
             }
         }
 
-        // Si no se encuentran observadores con el ID proporcionado, devolver 404 Not
-        // Found
         if (municipio.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        // Devolver la lista de observadores encontrados
         return ResponseEntity.ok(municipio);
     }
 
@@ -157,13 +172,27 @@ public class DatosEstacionController {
         return usuariosConEstacion;
     }
 
-    public List<DatosEstacion> mostrarlistarEstacion() {
-        // public String mostrarlistarPersonas() {
-        List<DatosEstacion> datosEstacions = datosEstacionRepository.findAll();
+    @GetMapping("/ver_estaciones")
+    public List<Map<String, Object>> obtenerEstaciones() {
+        List<Map<String, Object>> usuariosConEstacion = new ArrayList<>();
+        List<Object[]> listaUsuariosConEstacion = muniRepository.obtenerIdNombreMunicipios();
 
-        // Imprimir la lista de personas
+        for (Object[] usuarioConEstacion : listaUsuariosConEstacion) {
+            Map<String, Object> usuario = new HashMap<>();
+            usuario.put("idMunicipio", usuarioConEstacion[0]);
+            usuario.put("nombreMunicipio", usuarioConEstacion[1]);
+
+            usuariosConEstacion.add(usuario);
+        }
+        return usuariosConEstacion;
+    }
+
+    public List<DatosEstacionMeteorologica> mostrarlistarEstacion() {
+        // public String mostrarlistarPersonas() {
+        List<DatosEstacionMeteorologica> datosEstacions = datosEstacionRepository.findAll();
+
         System.out.println("Lista de Datos Estacion:");
-        for (DatosEstacion datosEstacion : datosEstacions) {
+        for (DatosEstacionMeteorologica datosEstacion : datosEstacions) {
             System.out.println(datosEstacion.toString());
         }
 
@@ -171,21 +200,21 @@ public class DatosEstacionController {
     }
 
     @GetMapping("/listaDatosEstacion")
-    public List<DatosEstacion> listarDatosEstacion() {
+    public List<DatosEstacionMeteorologica> listarDatosEstacion() {
 
-        List<DatosEstacion> a = datosEstacionRepository.findAll();
+        List<DatosEstacionMeteorologica> a = datosEstacionRepository.findAll();
         // Pageable pageable = PageRequest.of(0, 10);
         // return datosEstacionRepository.findAll(pageable).getContent();
         return datosEstacionRepository.findAll();
     }
 
     @PostMapping("/addDatosEstacion")
-    public ResponseEntity<String> guardarDatosEstacion(@RequestBody DatosEstacion datosEstacion) {
+    public ResponseEntity<String> guardarDatosEstacion(@RequestBody DatosEstacionMeteorologica datosEstacion) {
         System.out.println("--------" + datosEstacion.toString());
         try {
             // persona.setIdEstacion(100000);
             System.out.println("--+++++--" + datosEstacion.toString());
-            DatosEstacion nuevodatosEstacion = datosEstacionRepository.save(datosEstacion);
+            DatosEstacionMeteorologica nuevodatosEstacion = datosEstacionRepository.save(datosEstacion);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body("datos estacion guardada con ID: " + nuevodatosEstacion.getIdDatosEst());
         } catch (Exception e) {
@@ -205,9 +234,9 @@ public class DatosEstacionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DatosEstacion> actualizarDatosEstacion(@PathVariable("id") int id,
-            @RequestBody DatosEstacion datosEstacionActualizado) {
-        DatosEstacion datosEstacion = serviceEstacion.obtenerDatosEstacionPorId(id);
+    public ResponseEntity<DatosEstacionMeteorologica> actualizarDatosEstacion(@PathVariable("id") int id,
+            @RequestBody DatosEstacionMeteorologica datosEstacionActualizado) {
+        DatosEstacionMeteorologica datosEstacion = serviceEstacion.obtenerDatosEstacionPorId(id);
         if (datosEstacion != null) {
             // Actualizar los campos del objeto datosEstacion con los datos
 
@@ -234,13 +263,13 @@ public class DatosEstacionController {
     ////////////////////
     @PutMapping("/updateDatosEstacion/{id}")
     public ResponseEntity<String> actualizarDatosEstacion2(@PathVariable("id") int id,
-            @RequestBody DatosEstacion datosEstacionActualizados) {
+            @RequestBody DatosEstacionMeteorologica datosEstacionActualizados) {
         try {
             // DatosEstacion datosEstacionExistente =
             // serviceEstacion2.obtenerDatosEstacionPorId(id);
-            Optional<DatosEstacion> datosEstacionExistente2 = datosEstacionRepository.findById(id);
+            Optional<DatosEstacionMeteorologica> datosEstacionExistente2 = datosEstacionRepository.findById(id);
             if (datosEstacionExistente2 != null) {
-                DatosEstacion datosEstacion = datosEstacionExistente2.get();
+                DatosEstacionMeteorologica datosEstacion = datosEstacionExistente2.get();
                 // Actualiza los campos de la estación con los nuevos datos
 
                 datosEstacion.setTempMax(datosEstacionActualizados.getTempMax());
@@ -255,7 +284,7 @@ public class DatosEstacionController {
                 // Actualiza otros campos según sea necesario
 
                 // Guarda la estación actualizada en la base de datos
-                DatosEstacion datosEstacionActualizada = datosEstacionRepository.save(datosEstacion);
+                DatosEstacionMeteorologica datosEstacionActualizada = datosEstacionRepository.save(datosEstacion);
                 return ResponseEntity.status(HttpStatus.OK)
                         .body("Datos de la estación actualizados con éxito. ID: "
                                 + datosEstacionActualizada.getIdDatosEst());

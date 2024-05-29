@@ -16,8 +16,8 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "datos_estacion")
-public class DatosEstacion {
+@Table(name = "datos_estacion_meteorologica")
+public class DatosEstacionMeteorologica {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_datos_est")
@@ -48,7 +48,7 @@ public class DatosEstacion {
 
     @Override
     public String toString() {
-        return "DatosEstacion [idDatosEstacion=" + idDatosEst +
+        return "DatosEstacionMeteorologica [idDatosEstacion=" + idDatosEst +
                 ", tempMax=" + tempMax +
                 ", tempMin=" + tempMin +
                 ", tempAmb=" + tempAmb +

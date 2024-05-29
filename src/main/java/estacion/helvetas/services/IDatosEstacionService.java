@@ -1,12 +1,12 @@
 package estacion.helvetas.services;
 
-import estacion.helvetas.model.DatosEstacion;
+import estacion.helvetas.model.DatosEstacionMeteorologica;
 
 public interface IDatosEstacionService {
 
-    void guardar(DatosEstacion estacion);
+    void guardar(DatosEstacionMeteorologica estacion);
 
-    DatosEstacion buscarPorIdDatosEstacion(int idDatosEstacion);
+    DatosEstacionMeteorologica buscarPorIdDatosEstacion(int idDatosEstacion);
 
     void eliminarDatosEstacionId(int idDatosEstacion);
 

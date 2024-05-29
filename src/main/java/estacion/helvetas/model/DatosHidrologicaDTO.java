@@ -3,7 +3,7 @@ package estacion.helvetas.model;
 import java.sql.Date;
 import java.sql.Timestamp;
 
-public class DatosEstacionDTO {
+public class DatosHidrologicaDTO {
 
     private int idUsuario;
     private String municipio;
@@ -20,10 +20,8 @@ public class DatosEstacionDTO {
     private Float velViento;
     private int idEstacion;
     private boolean codTipoEstacion;
-    private Float limnimetro;
-    private boolean delete;
 
-    public DatosEstacionDTO() {
+    public DatosHidrologicaDTO() {
         this.idUsuario = idUsuario;
         this.municipio = municipio;
         this.estacion = estacion;
@@ -39,8 +37,6 @@ public class DatosEstacionDTO {
         this.velViento = velViento;
         this.idEstacion = idEstacion;
         this.codTipoEstacion = codTipoEstacion;
-        this.limnimetro = limnimetro;
-        this.delete = delete;
     }
 
     public int getIdUsuario() {
@@ -169,22 +165,6 @@ public class DatosEstacionDTO {
 
     public void setCodTipoEstacion(boolean codTipoEstacion) {
         this.codTipoEstacion = codTipoEstacion;
-    }
-
-    public Float getLimnimetro() {
-        return limnimetro;
-    }
-
-    public void setLimnimetro(Float limnimetro) {
-        this.limnimetro = limnimetro;
-    }
-
-    public boolean isDelete() {
-        return delete;
-    }
-
-    public void setDelete(boolean delete) {
-        this.delete = delete;
     }
 
     // Getters y setters

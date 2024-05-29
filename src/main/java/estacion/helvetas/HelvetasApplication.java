@@ -7,10 +7,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import estacion.helvetas.controller.DatosEstacionController;
+import estacion.helvetas.controller.DatosEstacionMeteorologicaController;
 import estacion.helvetas.controller.UsuarioController;
-import estacion.helvetas.model.DatosEstacion;
-import estacion.helvetas.repository.DatosEstacionRepository;
+import estacion.helvetas.model.DatosEstacionMeteorologica;
+import estacion.helvetas.repository.DatosEstacionMeteorologicaRepository;
 import estacion.helvetas.repository.UsuarioRepository;
 
 @SpringBootApplication
@@ -19,11 +19,11 @@ public class HelvetasApplication implements CommandLineRunner {
 	@Autowired
 	private UsuarioController controller;
 	@Autowired
-	private DatosEstacionController controller2;
+	private DatosEstacionMeteorologicaController controller2;
 	@Autowired
 	private UsuarioRepository usurepo;
 	@Autowired
-	private DatosEstacionRepository datosrepo;
+	private DatosEstacionMeteorologicaRepository datosrepo;
 
 	public static void main(String[] args) {
 		SpringApplication.run(HelvetasApplication.class, args);
@@ -71,7 +71,7 @@ public class HelvetasApplication implements CommandLineRunner {
 	// }
 
 	private void mostraDatosEstacion() {
-		List<DatosEstacion> datosEstacion = controller2.mostrarlistarEstacion();
+		List<DatosEstacionMeteorologica> datosEstacion = controller2.mostrarlistarEstacion();
 	}
 
 }

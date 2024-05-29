@@ -70,11 +70,11 @@ public class UsuarioController {
             usuario.put("nombreCompleto", usuarioConEstacion[4]);
             usuario.put("telefono", usuarioConEstacion[5]);
             usuario.put("idEstacion", usuarioConEstacion[6]);
+            usuario.put("codTipoEstacion", usuarioConEstacion[7]);
             usuariosConEstacion.add(usuario);
         }
         return usuariosConEstacion;
     }
-
 
     @PostMapping("/add")
     public ResponseEntity<String> guardarUsuario(@RequestBody Usuario usuario) {

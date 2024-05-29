@@ -1,6 +1,9 @@
 package estacion.helvetas.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import estacion.helvetas.model.Estacion;
 import estacion.helvetas.repository.EstacionRepository;
-import estacion.helvetas.service.db.DatosEstacionServiceJpa;
+import estacion.helvetas.service.db.DatosEstacionMeteorologicaServiceJpa;
 
 @CrossOrigin(origins = "*")
 // @RestController
@@ -27,7 +30,7 @@ public class EstacionController {
     @Autowired
     private EstacionRepository estacionRepository;
     @Autowired
-    private DatosEstacionServiceJpa estacionService;
+    private DatosEstacionMeteorologicaServiceJpa estacionService;
 
     // @GetMapping
     @GetMapping("/listaEstacion")
@@ -45,6 +48,21 @@ public class EstacionController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar la estación");
         }
+    }
+
+    @GetMapping("/verEstaciones/{id}")
+    public List<Map<String, Object>> obtenermunicipio(@PathVariable int id) {
+        List<Map<String, Object>> estacion = new ArrayList<>();
+        List<Object[]> listaUsuariosConEstacion = estacionRepository.obtenerEstacion(id);
+
+        for (Object[] usuarioConEstacion : listaUsuariosConEstacion) {
+            Map<String, Object> usuario = new HashMap<>();
+            usuario.put("idMunicipio", usuarioConEstacion[0]);
+            usuario.put("nombreEstacion", usuarioConEstacion[1]);
+            usuario.put("tipoEstacion", usuarioConEstacion[2]);
+            estacion.add(usuario);
+        }
+        return estacion;
     }
 
 }
