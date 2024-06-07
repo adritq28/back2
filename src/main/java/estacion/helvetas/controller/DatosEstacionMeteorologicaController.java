@@ -88,7 +88,7 @@ public class DatosEstacionMeteorologicaController {
         return ResponseEntity.ok(observadores);
     }
 
-    @GetMapping("/obtener_estacion/{id}")
+    @GetMapping("/obtener_estacion_meteorologica/{id}")
     public ResponseEntity<List<DatosEstacionDTO>> obtenerEstacion(@PathVariable int id) {
         List<Object[]> resultados = datosEstacionRepository.obtenerEstacion(id);
         List<DatosEstacionDTO> observadores = new ArrayList<>();

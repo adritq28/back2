@@ -15,7 +15,7 @@ public interface EstacionRepository extends JpaRepository<Estacion, Integer> {
 
     Optional<Estacion> findById(int idEstacion);
 
-    @Query("SELECT e.nombre, e.idMunicipio, e.tipoEstacion FROM Estacion e WHERE idMunicipio = :idMunicipio")
+    @Query("SELECT e.idMunicipio, e.nombre, e.tipoEstacion, e.codTipoEstacion, e.idEstacion FROM Estacion e WHERE idMunicipio = :idMunicipio")
     List<Object[]> obtenerEstacion(@Param("idMunicipio") int idMunicipio);
 
 }

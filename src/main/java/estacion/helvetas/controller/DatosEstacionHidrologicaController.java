@@ -73,4 +73,31 @@ public class DatosEstacionHidrologicaController {
         return ResponseEntity.ok(observadores);
     }
 
+    @GetMapping("/hidrologica/{id}")
+    public ResponseEntity<List<DatosEstacionDTO>> obtenerLista(@PathVariable int id) {
+        List<Object[]> resultados = datosEstacionRepository.obtenerListaHidrologica(id);
+        List<DatosEstacionDTO> observadores = new ArrayList<>();
+        System.out.println("sssssssssss");
+        for (Object[] resultado : resultados) {
+            int idEstacion = (int) resultado[0];
+            if (idEstacion == id) {
+                DatosEstacionDTO observador = new DatosEstacionDTO();
+                observador.setIdEstacion(idEstacion);
+                observador.setMunicipio((String) resultado[1]);
+                observador.setEstacion((String) resultado[2]);
+                observador.setTipoEstacion((String) resultado[3]);
+                observador.setNombreCompleto((String) resultado[4]);
+                observador.setFechaReg((Timestamp) resultado[5]);
+                observador.setLimnimetro((Float) resultado[6]);
+                observador.setDelete((boolean) resultado[7]);
+                observadores.add(observador);
+            }
+        }
+
+        if (observadores.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(observadores);
+    }
+
 }

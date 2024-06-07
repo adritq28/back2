@@ -58,8 +58,10 @@ public class EstacionController {
         for (Object[] usuarioConEstacion : listaUsuariosConEstacion) {
             Map<String, Object> usuario = new HashMap<>();
             usuario.put("idMunicipio", usuarioConEstacion[0]);
-            usuario.put("nombreEstacion", usuarioConEstacion[1]);
+            usuario.put("nombre", usuarioConEstacion[1]);
             usuario.put("tipoEstacion", usuarioConEstacion[2]);
+            usuario.put("codTipoEstacion", usuarioConEstacion[3]);
+            usuario.put("idEstacion", usuarioConEstacion[4]);
             estacion.add(usuario);
         }
         return estacion;

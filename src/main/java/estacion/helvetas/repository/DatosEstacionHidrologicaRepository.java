@@ -31,4 +31,14 @@ public interface DatosEstacionHidrologicaRepository extends JpaRepository<DatosE
 
         List<Object[]> obtenerDatosHidrologica(@Param("idUsuario") int idUsuario);
 
+        @Query("SELECT e.idEstacion, m.nombre, e.nombre, e.tipoEstacion, CONCAT(u.nombre, ' ', u.apePat, ' ', u.apeMat), d.fechaReg, d.limnimetro, d.delete "
+                        +
+                        "FROM Usuario u " +
+                        "JOIN Observador o ON u.idUsuario = o.idUsuario " +
+                        "JOIN Estacion e ON o.idEstacion = e.idEstacion " +
+                        "JOIN DatosEstacionHidrologica d ON e.idEstacion = d.idEstacion " +
+                        "JOIN Municipio m ON e.idMunicipio = m.idMunicipio " +
+                        "WHERE e.idEstacion = :idEstacion")
+        List<Object[]> obtenerListaHidrologica(@Param("idEstacion") int idEstacion);
+
 }
