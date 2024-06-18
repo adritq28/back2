@@ -15,6 +15,8 @@ import estacion.helvetas.repository.UsuarioRepository;
 
 @SpringBootApplication
 public class HelvetasApplication implements CommandLineRunner {
+	// implements CommandLineRunner
+	// implements WebMvcConfigurer
 
 	@Autowired
 	private UsuarioController controller;
@@ -28,6 +30,23 @@ public class HelvetasApplication implements CommandLineRunner {
 	public static void main(String[] args) {
 		SpringApplication.run(HelvetasApplication.class, args);
 	}
+
+	// @Override
+	// public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver>
+	// resolvers) {
+	// HandlerExceptionResolverComposite composite = new
+	// HandlerExceptionResolverComposite();
+
+	// SimpleMappingExceptionResolver simpleMappingExceptionResolver = new
+	// SimpleMappingExceptionResolver();
+	// simpleMappingExceptionResolver.setDefaultErrorView("error");
+
+	// List<HandlerExceptionResolver> exceptionResolvers = new ArrayList<>();
+	// exceptionResolvers.add(simpleMappingExceptionResolver);
+	// composite.setExceptionResolvers(exceptionResolvers);
+
+	// resolvers.add(composite);
+	// }
 
 	public void run(String... args) throws Exception {
 		// buscarTodosDocenteJpa();
@@ -50,7 +69,6 @@ public class HelvetasApplication implements CommandLineRunner {
 				System.out.print(elemento + " ");
 			}
 			System.out.println(); // Salto de línea después de imprimir todos los elementos de un usuario con
-									// estación
 		}
 	}
 

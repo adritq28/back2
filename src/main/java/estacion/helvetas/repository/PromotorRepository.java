@@ -1,0 +1,32 @@
+package estacion.helvetas.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import estacion.helvetas.model.Usuario;
+
+public interface PromotorRepository extends JpaRepository<Usuario, Integer> {
+
+    // @Query("SELECT u.idUsuario AS id, m.nombre AS nombreMunicipio, z.nombre AS
+    // nombreZona, " +
+    // "CONCAT(u.nombre, ' ', u.apePat, ' ', COALESCE(u.apeMat, '')) AS nombreComp,
+    // u.telefono AS telefono, z.idZona AS idzona "
+    // +
+    // "FROM Usuario u " +
+    // "JOIN Promotor p ON u.idUsuario = p.idUsuario " +
+    // "JOIN Zona z ON z.idZona = p.idZona " +
+    // "JOIN Municipio m ON m.idMunicipio = z.municipio.idMunicipio")
+    // List<Object[]> buscarPromotores();
+
+    @Query("SELECT u.idUsuario AS id, m.nombre AS nombreMunicipio, z.nombre AS nombreZona, " +
+            "CONCAT(u.nombre, ' ', u.apePat, ' ', COALESCE(u.apeMat, '')) AS nombreComp, u.telefono AS telefono, z.idZona AS idzona "
+            +
+            "FROM Usuario u " +
+            "JOIN Promotor p ON u.idUsuario = p.idUsuario " +
+            "JOIN Zona z ON z.idZona = p.idZona " +
+            "JOIN Municipio m ON m.idMunicipio = z.idMunicipio ORDER BY u.idUsuario ASC")
+    List<Object[]> buscarPromotores();
+
+}

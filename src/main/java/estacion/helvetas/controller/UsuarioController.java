@@ -38,9 +38,7 @@ public class UsuarioController {
     // @GetMapping
     @GetMapping("/sol")
     public List<Usuario> listarUsuario() {
-
         List<Usuario> a = usuarioRepository.findAll();
-
         return usuarioRepository.findAll();
     }
 
@@ -48,7 +46,6 @@ public class UsuarioController {
     public List<Usuario> mostrarlistarUsuario() {
         // public String mostrarlistarPersonas() {
         List<Usuario> usuarios = usuarioRepository.findAll();
-
         System.out.println("Lista de usuarios:");
         for (Usuario usuario : usuarios) {
             System.out.println(usuario.toString());
@@ -60,7 +57,6 @@ public class UsuarioController {
     public List<Map<String, Object>> obtenerUsuariosConEstacion() {
         List<Map<String, Object>> usuariosConEstacion = new ArrayList<>();
         List<Object[]> listaUsuariosConEstacion = usuarioRepository.buscarUsuariosConEstacion();
-
         for (Object[] usuarioConEstacion : listaUsuariosConEstacion) {
             Map<String, Object> usuario = new HashMap<>();
             usuario.put("idUsuario", usuarioConEstacion[0]);

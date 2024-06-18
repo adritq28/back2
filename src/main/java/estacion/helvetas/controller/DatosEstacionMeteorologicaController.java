@@ -166,7 +166,6 @@ public class DatosEstacionMeteorologicaController {
             Map<String, Object> usuario = new HashMap<>();
             usuario.put("idMunicipio", usuarioConEstacion[0]);
             usuario.put("nombreMunicipio", usuarioConEstacion[1]);
-
             usuariosConEstacion.add(usuario);
         }
         return usuariosConEstacion;
@@ -181,7 +180,6 @@ public class DatosEstacionMeteorologicaController {
             Map<String, Object> usuario = new HashMap<>();
             usuario.put("idMunicipio", usuarioConEstacion[0]);
             usuario.put("nombreMunicipio", usuarioConEstacion[1]);
-
             usuariosConEstacion.add(usuario);
         }
         return usuariosConEstacion;
@@ -190,12 +188,10 @@ public class DatosEstacionMeteorologicaController {
     public List<DatosEstacionMeteorologica> mostrarlistarEstacion() {
         // public String mostrarlistarPersonas() {
         List<DatosEstacionMeteorologica> datosEstacions = datosEstacionRepository.findAll();
-
         System.out.println("Lista de Datos Estacion:");
         for (DatosEstacionMeteorologica datosEstacion : datosEstacions) {
             System.out.println(datosEstacion.toString());
         }
-
         return datosEstacions;
     }
 
