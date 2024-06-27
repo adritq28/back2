@@ -1,0 +1,35 @@
+package estacion.helvetas.repository;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import estacion.helvetas.model.DatosPronostico;
+
+public interface DatosPronosticoRepository extends JpaRepository<DatosPronostico, Integer> {
+
+        Optional<DatosPronostico> findByIdPronostico(Long id);
+
+        // @Query("SELECT u.idUmbrales FROM Umbrales u " +
+        // "JOIN Fenologia f ON f.idFenologia = u.idFenologia " +
+        // "JOIN Cultivo c ON f.idCultivo = c.idCultivo " +
+        // "JOIN Zona z ON c.idZona = z.idZona " +
+        // "WHERE z.idZona = :idZona")
+        // List<Long> findUmbralesId(int idZona);
+
+        @Query("SELECT u.idUsuario, m.nombre, z.nombre, " +
+                        "CONCAT(u.nombre, ' ', u.apePat, ' ', COALESCE(u.apeMat, '')), d.fecha, " +
+                        "d.tempMin, d.tempMax, d.pcpn, d.idFenologia " +
+                        "FROM Usuario u " +
+                        "JOIN Promotor p ON u.idUsuario = p.idUsuario " +
+                        "JOIN Zona z ON p.idZona = p.idZona " +
+                        "JOIN DatosPronostico d ON d.idZona = z.idZona " +
+                        "JOIN Municipio m ON m.idMunicipio = z.idMunicipio " +
+                        "WHERE u.idUsuario = :idUsuario")
+
+        List<Object[]> obtenerDatosPronostico(@Param("idUsuario") int idUsuario);
+
+}
