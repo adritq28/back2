@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,10 +36,30 @@ public class PromotorController {
             Map<String, Object> usuario = new HashMap<>();
             usuario.put("idUsuario", usuarioConEstacion[0]);
             usuario.put("nombreMunicipio", usuarioConEstacion[1]);
-            usuario.put("nombre", usuarioConEstacion[2]);
+            usuario.put("nombreZona", usuarioConEstacion[2]);
             usuario.put("nombreCompleto", usuarioConEstacion[3]);
             usuario.put("telefono", usuarioConEstacion[4]);
             usuario.put("idZona", usuarioConEstacion[5]);
+            usuarioPromotor.add(usuario);
+        }
+        return usuarioPromotor;
+    }
+
+    @GetMapping("/lista_zonas/{id}")
+    public List<Map<String, Object>> buscaPromotor(@PathVariable int id) {
+        List<Map<String, Object>> usuarioPromotor = new ArrayList<>();
+        List<Object[]> listausuarioPromotor = promotorRepository.buscarZonas(id);
+        for (Object[] usuarioConEstacion : listausuarioPromotor) {
+            Map<String, Object> usuario = new HashMap<>();
+            usuario.put("idUsuario", usuarioConEstacion[0]);
+            usuario.put("nombreMunicipio", usuarioConEstacion[1]);
+            usuario.put("nombreZona", usuarioConEstacion[2]);
+            usuario.put("nombreCompleto", usuarioConEstacion[3]);
+            usuario.put("telefono", usuarioConEstacion[4]);
+            usuario.put("idZona", usuarioConEstacion[5]);
+            usuario.put("idCultivo", usuarioConEstacion[6]);
+            usuario.put("nombreCultivo", usuarioConEstacion[7]);
+            usuario.put("tipo", usuarioConEstacion[8]);
             usuarioPromotor.add(usuario);
         }
         return usuarioPromotor;

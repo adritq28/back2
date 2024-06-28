@@ -25,11 +25,11 @@ public interface DatosPronosticoRepository extends JpaRepository<DatosPronostico
                         "d.tempMin, d.tempMax, d.pcpn, d.idFenologia " +
                         "FROM Usuario u " +
                         "JOIN Promotor p ON u.idUsuario = p.idUsuario " +
-                        "JOIN Zona z ON p.idZona = p.idZona " +
+                        "JOIN Zona z ON p.idZona = z.idZona " +
                         "JOIN DatosPronostico d ON d.idZona = z.idZona " +
                         "JOIN Municipio m ON m.idMunicipio = z.idMunicipio " +
-                        "WHERE u.idUsuario = :idUsuario")
+                        "WHERE u.idUsuario = :idUsuario AND z.idZona = :idZona")
 
-        List<Object[]> obtenerDatosPronostico(@Param("idUsuario") int idUsuario);
+        List<Object[]> obtenerDatosPronostico(@Param("idUsuario") int idUsuario, @Param("idZona") int idZona);
 
 }

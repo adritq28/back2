@@ -1,6 +1,7 @@
 package estacion.helvetas;
 
 import java.util.List;
+import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -12,11 +13,17 @@ import estacion.helvetas.controller.UsuarioController;
 import estacion.helvetas.model.DatosEstacionMeteorologica;
 import estacion.helvetas.repository.DatosEstacionMeteorologicaRepository;
 import estacion.helvetas.repository.UsuarioRepository;
+import jakarta.annotation.PostConstruct;
 
 @SpringBootApplication
 public class HelvetasApplication implements CommandLineRunner {
 	// implements CommandLineRunner
 	// implements WebMvcConfigurer
+
+	@PostConstruct
+	void started() {
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC")); // Configura la zona horaria UTC
+	}
 
 	@Autowired
 	private UsuarioController controller;

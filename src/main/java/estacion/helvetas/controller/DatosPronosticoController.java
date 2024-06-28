@@ -47,9 +47,10 @@ public class DatosPronosticoController {
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<List<DatosPronosticoDTO>> obtenerDatosPronostico(@PathVariable int id) {
-        List<Object[]> resultados = datosPronosticoRepository.obtenerDatosPronostico(id);
+    @GetMapping("/{id}/{idZona}")
+    public ResponseEntity<List<DatosPronosticoDTO>> obtenerDatosPronostico(@PathVariable int id,
+            @PathVariable int idZona) {
+        List<Object[]> resultados = datosPronosticoRepository.obtenerDatosPronostico(id, idZona);
         List<DatosPronosticoDTO> Pronosticoes = new ArrayList<>();
 
         for (Object[] resultado : resultados) {

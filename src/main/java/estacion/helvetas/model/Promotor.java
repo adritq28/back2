@@ -25,6 +25,7 @@ public class Promotor {
         this.idPromotor = idPromotor;
         this.idUsuario = idUsuario;
         this.idZona = idZona;
+
     }
 
 }

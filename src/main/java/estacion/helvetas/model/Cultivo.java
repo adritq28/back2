@@ -1,5 +1,9 @@
 package estacion.helvetas.model;
 
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,19 +21,25 @@ public class Cultivo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_cultivo")
     private Integer idCultivo;
+
     @Column(name = "nombre")
     private String nombre;
+
     @Column(name = "tipo")
     private String tipo;
+
     @Column(name = "fecha_siembra")
-    private java.sql.Timestamp fechaSiembra = new java.sql.Timestamp(System.currentTimeMillis());
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private Date fechaSiembra;
+
     @Column(name = "id_zona")
     private Integer idZona;
 
-    @Override
-    public String toString() {
-        return "Cultivo [idcultivo=" + idCultivo + ", nombre=" + nombre + ", tipo=" + tipo + ", fechaSiembra="
-                + fechaSiembra + ", idZona=" + idZona + "]";
+    // Constructor sin argumentos requerido por Hibernate
+    public Cultivo() {
+        this.fechaSiembra = new Date(System.currentTimeMillis()); // Inicialización opcional aquí
     }
 
+    // Getters y setters
+    // toString() y otros métodos si es necesario
 }
