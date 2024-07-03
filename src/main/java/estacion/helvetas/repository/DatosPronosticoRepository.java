@@ -32,4 +32,14 @@ public interface DatosPronosticoRepository extends JpaRepository<DatosPronostico
 
         List<Object[]> obtenerDatosPronostico(@Param("idUsuario") int idUsuario, @Param("idZona") int idZona);
 
+        @Query("select p.idPronostico, p.idFenologia, p.idZona, f.idCultivo, u.idUmbrales, f.fase, p.tempMax, p.tempMin, p.pcpn, p.fecha, "
+                        +
+                        "f.descripcion, f.nroDias, u.tempMax, u.tempMin, u.pcpn " +
+                        "from DatosPronostico p " +
+                        "join Fenologia f on p.idFenologia = f.idFenologia " +
+                        "join Umbrales u on u.idFenologia = f.idFenologia " +
+                        "where f.idFenologia = :idFenologia and p.idZona = :idZona")
+
+        List<Object[]> comparacionDatosPronostico(@Param("idFenologia") int idFenologia, @Param("idZona") int idZona);
+
 }

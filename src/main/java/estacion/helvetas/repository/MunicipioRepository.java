@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import estacion.helvetas.model.Municipio;
 
@@ -16,5 +17,14 @@ public interface MunicipioRepository extends JpaRepository<Municipio, Integer> {
 
     @Query("SELECT m.idMunicipio, m.nombre FROM Municipio m")
     List<Object[]> obtenerIdNombreMunicipios();
+
+    // @Query("SELECT m.idMunicipio, m.nombre, z.idZona, z.nombre " +
+    // "FROM Municipio m " +
+    // "JOIN Zona z ON m.idMunicipio = z.idMunicipio " +
+    // "WHERE m.idMunicipio = : idMunicipio")
+    // List<Object[]> obtenerZonasMunicipio(@Param("idMunicipio") int idMunicipio);
+
+    @Query("SELECT m.idMunicipio, m.nombre, z.idZona, z.nombre FROM Municipio m JOIN Zona z ON m.idMunicipio = z.idMunicipio WHERE m.idMunicipio = :idMunicipio")
+    List<Object[]> obtenerZonasMunicipio(@Param("idMunicipio") int idMunicipio);
 
 }

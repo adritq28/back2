@@ -1,8 +1,14 @@
 package estacion.helvetas.controller;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -69,11 +75,84 @@ public class DatosPronosticoController {
                 Pronosticoes.add(Pronostico);
             }
         }
-
         if (Pronosticoes.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(Pronosticoes);
+    }
+
+    @GetMapping("/comparacion/{idFenologia}/{idZona}")
+    public Map<String, Object> comparacionDatos(@PathVariable int idFenologia, @PathVariable int idZona) {
+        List<Object[]> listaPronostico = datosPronosticoRepository.comparacionDatosPronostico(idFenologia, idZona);
+
+        Map<String, Object> closestDateData = null;
+        long minDifference = Long.MAX_VALUE;
+        LocalDate currentDate = LocalDate.now();
+
+        for (Object[] usuarioConFenologia : listaPronostico) {
+            Map<String, Object> usuario = new HashMap<>();
+            usuario.put("idPronostico", usuarioConFenologia[0]);
+            usuario.put("idFenologia", usuarioConFenologia[1]);
+            usuario.put("idZona", usuarioConFenologia[2]);
+            usuario.put("idCultivo", usuarioConFenologia[3]);
+            usuario.put("idUmbrales", usuarioConFenologia[4]);
+            usuario.put("fase", usuarioConFenologia[5]);
+            usuario.put("tempMax", usuarioConFenologia[6]);
+            usuario.put("tempMin", usuarioConFenologia[7]);
+            usuario.put("pcpn", usuarioConFenologia[8]);
+            usuario.put("fecha", usuarioConFenologia[9]);
+            usuario.put("descripcion", usuarioConFenologia[10]);
+            usuario.put("nroDias", usuarioConFenologia[11]);
+            usuario.put("tempMaxPronostico", usuarioConFenologia[12]);
+            usuario.put("tempMinPronostico", usuarioConFenologia[13]);
+            usuario.put("pcpnPronostico", usuarioConFenologia[14]);
+
+            // Convertir la fecha a LocalDate
+            LocalDate fecha = ((Date) usuarioConFenologia[9]).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            long difference = Math.abs(ChronoUnit.DAYS.between(currentDate, fecha));
+
+            // Comparar los valores y determinar la alerta
+            Float tempMax = (Float) usuarioConFenologia[6];
+            Float tempMin = (Float) usuarioConFenologia[7];
+            Float pcpn = (Float) usuarioConFenologia[8];
+
+            Float tempMaxPronostico = (Float) usuarioConFenologia[12];
+            Float tempMinPronostico = (Float) usuarioConFenologia[13];
+            Float pcpnPronostico = (Float) usuarioConFenologia[14];
+
+            String alerta = "";
+
+            if (Math.abs(tempMax - tempMaxPronostico) > 5 ||
+                    Math.abs(tempMin - tempMinPronostico) > 5 ||
+                    Math.abs(pcpn - pcpnPronostico) > 5) {
+                alerta = "ALERTA ROJA";
+            } else if (Math.abs(tempMax - tempMaxPronostico) > 3 ||
+                    Math.abs(tempMin - tempMinPronostico) > 3 ||
+                    Math.abs(pcpn - pcpnPronostico) > 3) {
+                alerta = "ALERTA AMARILLA";
+            } else {
+                alerta = "SIN ALERTA";
+            }
+
+            // if (diferenciaTempMax > 5 || diferenciaTempMin > 5 || diferenciaPcpn > 5) {
+            // alerta = "ALERTA ROJA";
+            // } else if (diferenciaTempMax > 3 || diferenciaTempMin > 3 || diferenciaPcpn >
+            // 3) {
+            // alerta = "ALERTA AMARILLA";
+            // } else {
+            // alerta = "SIN ALERTA";
+            // }
+
+            usuario.put("alerta", alerta);
+
+            // Comprobar si esta diferencia de fecha es la más pequeña que hemos visto
+            if (difference < minDifference) {
+                minDifference = difference;
+                closestDateData = usuario;
+            }
+        }
+
+        return closestDateData;
     }
 
 }
