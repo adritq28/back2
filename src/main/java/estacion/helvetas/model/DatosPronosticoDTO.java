@@ -10,7 +10,7 @@ public class DatosPronosticoDTO {
     private Float tempMin;
     private Float tempMax;
     private Float pcpn;
-    private int idFenologia;
+    // private int idFenologia;
 
     public DatosPronosticoDTO() {
         this.idUsuario = idUsuario;
@@ -21,7 +21,7 @@ public class DatosPronosticoDTO {
         this.tempMin = tempMin;
         this.tempMax = tempMax;
         this.pcpn = pcpn;
-        this.idFenologia = idFenologia;
+        // this.idFenologia = idFenologia;
     }
 
     public int getIdUsuario() {
@@ -88,13 +88,13 @@ public class DatosPronosticoDTO {
         this.pcpn = pcpn;
     }
 
-    public int getIdFenologia() {
-        return idFenologia;
-    }
+    // public int getIdFenologia() {
+    // return idFenologia;
+    // }
 
-    public void setIdFenologia(int idFenologia) {
-        this.idFenologia = idFenologia;
-    }
+    // public void setIdFenologia(int idFenologia) {
+    // this.idFenologia = idFenologia;
+    // }
 
     // Getters y setters
 }

@@ -30,8 +30,8 @@ public class DatosPronostico {
     private Float pcpn;
     @Column(name = "id_zona")
     private Integer idZona;
-    @Column(name = "id_fenologia")
-    private Integer idFenologia;
+    // @Column(name = "id_fenologia")
+    // private Integer idFenologia;
     @Column(name = "fecha")
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -44,7 +44,7 @@ public class DatosPronostico {
                 ", tempMin=" + tempMin +
                 ", pcpn=" + pcpn +
                 ", idZona=" + idZona +
-                ", idFenologia=" + idFenologia +
+                // ", idFenologia=" + idFenologia +
                 ", fecha=" + fecha +
                 "]";
     }

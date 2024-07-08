@@ -1,6 +1,7 @@
 package estacion.helvetas.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -9,6 +10,12 @@ import org.springframework.data.repository.query.Param;
 import estacion.helvetas.model.Fenologia;
 
 public interface FenologiaRepository extends JpaRepository<Fenologia, Integer> {
+
+        Optional<Fenologia> findByIdFenologia(int id);
+
+        // Optional<Fenologia> findByIdCultivo(int id);
+
+        List<Fenologia> findByIdCultivo(int cultivoId);
 
         @Query(
 

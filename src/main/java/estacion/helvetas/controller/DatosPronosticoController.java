@@ -53,6 +53,22 @@ public class DatosPronosticoController {
         }
     }
 
+    @GetMapping("/registro/{idCultivo}")
+    public List<Map<String, Object>> pronosticoCultivo(@PathVariable int idCultivo) {
+        List<Map<String, Object>> estacion = new ArrayList<>();
+        List<Object[]> listaPronostico = datosPronosticoRepository.pronosticoCultivo(idCultivo);
+
+        for (Object[] usuarioConEstacion : listaPronostico) {
+            Map<String, Object> usuario = new HashMap<>();
+            usuario.put("tempMax", usuarioConEstacion[0]);
+            usuario.put("tempMin", usuarioConEstacion[1]);
+            usuario.put("pcpn", usuarioConEstacion[2]);
+            usuario.put("fecha", usuarioConEstacion[3]);
+            estacion.add(usuario);
+        }
+        return estacion;
+    }
+
     @GetMapping("/{id}/{idZona}")
     public ResponseEntity<List<DatosPronosticoDTO>> obtenerDatosPronostico(@PathVariable int id,
             @PathVariable int idZona) {
@@ -71,7 +87,7 @@ public class DatosPronosticoController {
                 Pronostico.setTempMin((Float) resultado[5]);
                 Pronostico.setTempMax((Float) resultado[6]);
                 Pronostico.setPcpn((Float) resultado[7]);
-                Pronostico.setIdFenologia((int) resultado[8]);
+                // Pronostico.setIdFenologia((int) resultado[8]);
                 Pronosticoes.add(Pronostico);
             }
         }

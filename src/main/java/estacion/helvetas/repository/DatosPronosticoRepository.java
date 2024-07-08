@@ -13,6 +13,8 @@ public interface DatosPronosticoRepository extends JpaRepository<DatosPronostico
 
         Optional<DatosPronostico> findByIdPronostico(Long id);
 
+        List<DatosPronostico> findByIdZona(int idZona);
+
         // @Query("SELECT u.idUmbrales FROM Umbrales u " +
         // "JOIN Fenologia f ON f.idFenologia = u.idFenologia " +
         // "JOIN Cultivo c ON f.idCultivo = c.idCultivo " +
@@ -20,9 +22,14 @@ public interface DatosPronosticoRepository extends JpaRepository<DatosPronostico
         // "WHERE z.idZona = :idZona")
         // List<Long> findUmbralesId(int idZona);
 
+        @Query("select p.tempMax, p.tempMin, p.pcpn, p.fecha from Cultivo c " +
+                        "join DatosPronostico p on c.idZona = p.idZona " +
+                        "where c.idCultivo = :idCultivo")
+        List<Object[]> pronosticoCultivo(@Param("idCultivo") int idCultivo);
+
         @Query("SELECT u.idUsuario, m.nombre, z.nombre, " +
                         "CONCAT(u.nombre, ' ', u.apePat, ' ', COALESCE(u.apeMat, '')), d.fecha, " +
-                        "d.tempMin, d.tempMax, d.pcpn, d.idFenologia " +
+                        "d.tempMin, d.tempMax, d.pcpn " +
                         "FROM Usuario u " +
                         "JOIN Promotor p ON u.idUsuario = p.idUsuario " +
                         "JOIN Zona z ON p.idZona = z.idZona " +
@@ -32,11 +39,13 @@ public interface DatosPronosticoRepository extends JpaRepository<DatosPronostico
 
         List<Object[]> obtenerDatosPronostico(@Param("idUsuario") int idUsuario, @Param("idZona") int idZona);
 
-        @Query("select p.idPronostico, p.idFenologia, p.idZona, f.idCultivo, u.idUmbrales, f.fase, p.tempMax, p.tempMin, p.pcpn, p.fecha, "
+        @Query("select p.idPronostico, f.idFenologia, p.idZona, f.idCultivo, u.idUmbrales, f.fase, p.tempMax, p.tempMin, p.pcpn, p.fecha, "
                         +
                         "f.descripcion, f.nroDias, u.tempMax, u.tempMin, u.pcpn " +
                         "from DatosPronostico p " +
-                        "join Fenologia f on p.idFenologia = f.idFenologia " +
+                        "join Zona z on z.idZona = p.idZona " +
+                        "join Cultivo c on c.idZona = c.idZona " +
+                        "join Fenologia f on f.idCultivo = c.idCultivo " +
                         "join Umbrales u on u.idFenologia = f.idFenologia " +
                         "where f.idFenologia = :idFenologia and p.idZona = :idZona")
 
