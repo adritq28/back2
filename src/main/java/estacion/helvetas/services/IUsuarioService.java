@@ -16,4 +16,6 @@ public interface IUsuarioService {
 
     void deleteUsuario(int idUsuario);
 
+    // Optional<Usuario> findByIdUsuario(Integer idUsuario);
+
 }

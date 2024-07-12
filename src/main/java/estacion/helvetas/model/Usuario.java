@@ -30,6 +30,8 @@ public class Usuario {
     private String ci;
     @Column(name = "password")
     private String password;
+    @Column(name = "admin")
+    private boolean admin;
 
     @Override
     public String toString() {
@@ -37,4 +39,21 @@ public class Usuario {
                 + ", apePat=" + apePat + ", apeMat=" + apeMat + ", telefono=" + telefono + ", ci=" + ci + ", password="
                 + password + "]";
     }
+
+    public Usuario() {
+    }
+
+    public Usuario(Integer idUsuario, String nombreUsuario, String nombre, String apePat, String apeMat,
+            String telefono, String ci, String password, boolean admin) {
+        this.idUsuario = idUsuario;
+        this.nombreUsuario = nombreUsuario;
+        this.nombre = nombre;
+        this.apePat = apePat;
+        this.apeMat = apeMat;
+        this.telefono = telefono;
+        this.ci = ci;
+        this.password = password;
+        this.admin = admin;
+    }
+
 }

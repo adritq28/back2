@@ -67,4 +67,40 @@ public class EstacionController {
         return estacion;
     }
 
+    @GetMapping("/lista_meteorologica")
+    public List<Map<String, Object>> listaEstacionMteorologica() {
+        List<Map<String, Object>> estacionMeorologica = new ArrayList<>();
+        List<Object[]> listaestacionMeorologica = estacionRepository.listaEstacionMeteorogica();
+        for (Object[] usuarioConEstacion : listaestacionMeorologica) {
+            Map<String, Object> usuario = new HashMap<>();
+            usuario.put("idEstacion", usuarioConEstacion[0]);
+            usuario.put("nombreMunicipio", usuarioConEstacion[1]);
+            usuario.put("nombreEstacion", usuarioConEstacion[2]);
+            usuario.put("tipoEstacion", usuarioConEstacion[3]);
+            usuario.put("codTipoEstacion", usuarioConEstacion[4]);
+            estacionMeorologica.add(usuario);
+        }
+        return estacionMeorologica;
+    }
+
+    @GetMapping("/lista_datos_meteorologica/{idEstacion}")
+    public List<Map<String, Object>> listaDatosMeteorologica(@PathVariable int idEstacion) {
+        List<Map<String, Object>> estacionMeorologica = new ArrayList<>();
+        List<Object[]> listaestacionMeorologica = estacionRepository.listaDatosMeteorologica(idEstacion);
+        for (Object[] usuarioConEstacion : listaestacionMeorologica) {
+            Map<String, Object> usuario = new HashMap<>();
+            usuario.put("tempMax", usuarioConEstacion[0]);
+            usuario.put("tempMin", usuarioConEstacion[1]);
+            usuario.put("pcpn", usuarioConEstacion[2]);
+            usuario.put("tempAmb", usuarioConEstacion[3]);
+            usuario.put("dirViento", usuarioConEstacion[4]);
+            usuario.put("velViento", usuarioConEstacion[5]);
+            usuario.put("taevap", usuarioConEstacion[6]);
+            usuario.put("fechaReg", usuarioConEstacion[7]);
+            usuario.put("idDatosEst", usuarioConEstacion[8]);
+            estacionMeorologica.add(usuario);
+        }
+        return estacionMeorologica;
+    }
+
 }

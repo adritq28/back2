@@ -9,7 +9,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import estacion.helvetas.controller.DatosEstacionMeteorologicaController;
-import estacion.helvetas.controller.UsuarioController;
 import estacion.helvetas.model.DatosEstacionMeteorologica;
 import estacion.helvetas.repository.DatosEstacionMeteorologicaRepository;
 import estacion.helvetas.repository.UsuarioRepository;
@@ -25,8 +24,8 @@ public class HelvetasApplication implements CommandLineRunner {
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC")); // Configura la zona horaria UTC
 	}
 
-	@Autowired
-	private UsuarioController controller;
+	// @Autowired
+	// private UsuarioController controller;
 	@Autowired
 	private DatosEstacionMeteorologicaController controller2;
 	@Autowired
@@ -37,23 +36,6 @@ public class HelvetasApplication implements CommandLineRunner {
 	public static void main(String[] args) {
 		SpringApplication.run(HelvetasApplication.class, args);
 	}
-
-	// @Override
-	// public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver>
-	// resolvers) {
-	// HandlerExceptionResolverComposite composite = new
-	// HandlerExceptionResolverComposite();
-
-	// SimpleMappingExceptionResolver simpleMappingExceptionResolver = new
-	// SimpleMappingExceptionResolver();
-	// simpleMappingExceptionResolver.setDefaultErrorView("error");
-
-	// List<HandlerExceptionResolver> exceptionResolvers = new ArrayList<>();
-	// exceptionResolvers.add(simpleMappingExceptionResolver);
-	// composite.setExceptionResolvers(exceptionResolvers);
-
-	// resolvers.add(composite);
-	// }
 
 	public void run(String... args) throws Exception {
 		// buscarTodosDocenteJpa();

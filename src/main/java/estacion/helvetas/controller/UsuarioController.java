@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -89,4 +90,74 @@ public class UsuarioController {
     public String obtenerTelefono(@PathVariable int idUsuario) {
         return usuarioService.obtenerTelefonoPorIdUsuario(idUsuario);
     }
+
+    // @PostMapping("/validar")
+    // public ResponseEntity<?> validarUsuario(@RequestBody Usuario request) {
+    // Optional<Usuario> usuarioOptional =
+    // usuarioService.findByIdUsuario(request.getIdUsuario());
+    // // System.out.println("-------- " + usuarioOptional.get().getApeMat());
+    // if (usuarioOptional.isPresent()) {
+    // System.out.println("aaaaaaaaaaaa");
+    // Usuario usuario = usuarioOptional.get();
+    // if (usuario.getPassword().equals(request.getPassword()) && usuario.isAdmin())
+    // {
+    // return ResponseEntity.ok().build();
+    // } else {
+    // return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    // }
+
+    // } else {
+    // // Si no se encuentra el usuario, devolver Unauthorized
+    // System.out.println("bbbbbbbbbbbb");
+    // return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    // }
+
+    // }
+
+    @GetMapping("/sol/{id}")
+    public ResponseEntity<Usuario> listarUsuarioPorId(@PathVariable Integer id) {
+        Optional<Usuario> usuario = usuarioRepository.findByIdUsuario(id);
+        if (usuario.isPresent()) {
+            return ResponseEntity.ok(usuario.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // CONTROL DE CALIDADAA
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
+        String nombreUsuario = loginRequest.get("nombreUsuario");
+        String password = loginRequest.get("password");
+
+        Optional<Usuario> optionalUsuario = usuarioRepository.findByNombreUsuario(nombreUsuario);
+
+        if (optionalUsuario.isPresent()) {
+            Usuario usuario = optionalUsuario.get();
+
+            // Verifica la contraseña
+            if (password.equals(usuario.getPassword())) {
+                // Preparar los datos del usuario a devolver
+                if (usuario.isAdmin()) {
+                    // Construir el objeto JSON de respuesta
+                    // Puedes personalizar los campos que deseas devolver
+                    Map<String, Object> responseData = Map.of(
+                            "idUsuario", usuario.getIdUsuario(),
+                            "nombre", usuario.getNombre(),
+                            "apePat", usuario.getApePat(),
+                            "apeMat", usuario.getApeMat(),
+                            "ci", usuario.getCi(),
+                            "telefono", usuario.getTelefono());
+                    return ResponseEntity.ok(responseData);
+                } else {
+                    return ResponseEntity.ok("El usuario no es administrador.");
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.OK).body("Contraseña incorrecta.");
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado en la base de datos.");
+        }
+    }
+
 }

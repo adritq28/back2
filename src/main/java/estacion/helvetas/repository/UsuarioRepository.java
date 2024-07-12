@@ -13,7 +13,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     List<Usuario> findByNombre(String nombre);
 
-    Optional<Usuario> findById(int idUsuario);
+    Optional<Usuario> findByIdUsuario(int idUsuario);
 
     @Query("SELECT u.idUsuario AS idUsuario, " +
             "m.nombre AS minucipio, e.nombre AS estacion, e.tipoEstacion AS tipoestacion, " +
@@ -29,15 +29,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     @Query("SELECT u.telefono FROM Usuario u WHERE u.idUsuario = :idUsuario")
     String findTelefonoByIdUsuario(@Param("idUsuario") int idUsuario);
 
-    // @Query("SELECT u.idUsuario AS id, m.nombre AS nombreMunicipio, z.nombre AS
-    // nombreZona, " +
-    // "CONCAT(u.nombre, ' ', u.apePat, ' ', COALESCE(u.apeMat, '')) AS nombreComp,
-    // u.telefono AS telefono, z.idZona AS idzona "
-    // +
-    // "FROM Usuario u " +
-    // "JOIN Promotor p ON u.idUsuario = p.idUsuario " +
-    // "JOIN Zona z ON z.idZona = p.idZona " +
-    // "JOIN Municipio m ON m.idMunicipio = z.idMunicipio")
-    // List<Object[]> buscarPromotores();
+    Optional<Usuario> findByNombreUsuario(String nombreUsuario);
 
 }

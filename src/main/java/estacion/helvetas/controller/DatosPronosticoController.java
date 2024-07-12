@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 import estacion.helvetas.model.DatosPronostico;
 import estacion.helvetas.model.DatosPronosticoDTO;
 import estacion.helvetas.repository.DatosPronosticoRepository;
-import estacion.helvetas.service.db.DatosPronosticoServiceJpa;
 
 @CrossOrigin(origins = "*")
 // @RestController
@@ -35,9 +34,6 @@ public class DatosPronosticoController {
 
     @Autowired
     private DatosPronosticoRepository datosPronosticoRepository;
-
-    @Autowired
-    private DatosPronosticoServiceJpa pronosticoService;
 
     @PostMapping("/addDatosPronostico")
     public ResponseEntity<String> guanrdarDatosPronostico(@RequestBody DatosPronostico datosPronostico) {

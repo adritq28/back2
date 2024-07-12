@@ -18,6 +18,9 @@ public class UsuarioServiceJpa implements IUsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepo;
 
+    // @Autowired
+    // private IUsuarioService usuarioService;
+
     public String obtenerTelefonoPorIdUsuario(int idUsuario) {
         return usuarioRepo.findTelefonoByIdUsuario(idUsuario);
     }
@@ -49,5 +52,12 @@ public class UsuarioServiceJpa implements IUsuarioService {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'guardar'");
     }
+
+    // @Override
+    // public Optional<Usuario> findByIdUsuario(Integer idUsuario) {
+    // // TODO Auto-generated method stub
+    // throw new UnsupportedOperationException("Unimplemented method
+    // 'findByIdUsuario'");
+    // }
 
 }
