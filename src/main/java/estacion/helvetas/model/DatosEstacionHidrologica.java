@@ -25,9 +25,11 @@ public class DatosEstacionHidrologica {
     @Column(name = "limnimetro")
     private Float limnimetro;
     @Column(name = "delete")
-    private boolean delete;
+    private Boolean delete;
     @Column(name = "id_estacion")
     private Integer idEstacion;
+    @Column(name = "edit")
+    private Boolean edit;
     @Column(name = "fecha_reg")
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -42,5 +44,13 @@ public class DatosEstacionHidrologica {
                 ", idEstacion=" + idEstacion +
 
                 "]";
+    }
+
+    public Boolean getDelete() {
+        return delete;
+    }
+
+    public void setDelete(Boolean delete) {
+        this.delete = delete;
     }
 }

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import estacion.helvetas.repository.MunicipioRepository;
-import estacion.helvetas.service.db.DatosPronosticoServiceJpa;
 
 @CrossOrigin(origins = "*")
 // @RestController
@@ -24,9 +23,6 @@ public class MunicipioController {
 
     @Autowired
     private MunicipioRepository municipioRepository;
-
-    @Autowired
-    private DatosPronosticoServiceJpa pronosticoService;
 
     @GetMapping("/zona/{id}")
     public List<Map<String, Object>> buscaZonas(@PathVariable int id) {

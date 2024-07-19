@@ -40,6 +40,10 @@ public class DatosEstacionMeteorologica {
     private Float velViento;
     @Column(name = "id_estacion")
     private Integer idEstacion;
+    @Column(name = "edit")
+    private Boolean editar = false;
+    @Column(name = "delete")
+    private Boolean delete = false;
 
     @Column(name = "fecha_reg")
     @Temporal(TemporalType.TIMESTAMP)
@@ -58,8 +62,17 @@ public class DatosEstacionMeteorologica {
                 ", dirViento=" + velViento +
                 ", velViento=" + velViento +
                 ", idEstacion=" + idEstacion +
-
+                ", edit=" + editar +
+                ", delete=" + delete +
                 "]";
+    }
+
+    public Boolean getDelete() {
+        return delete;
+    }
+
+    public void setDelete(Boolean delete) {
+        this.delete = delete;
     }
 
     // public void setFechados(Date fechados) {

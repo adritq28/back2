@@ -11,7 +11,7 @@ import estacion.helvetas.model.DatosEstacionHidrologica;
 
 public interface DatosEstacionHidrologicaRepository extends JpaRepository<DatosEstacionHidrologica, Integer> {
 
-        Optional<DatosEstacionHidrologica> findByIdHidrologica(Long id);
+        Optional<DatosEstacionHidrologica> findByIdHidrologica(int id);
 
         @Query(value = "SELECT t1.idUsuario AS id, " +
                         "t5.nombre AS municipio, " +

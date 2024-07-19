@@ -11,7 +11,7 @@ import estacion.helvetas.model.DatosEstacionMeteorologica;
 
 public interface DatosEstacionMeteorologicaRepository extends JpaRepository<DatosEstacionMeteorologica, Integer> {
 
-        Optional<DatosEstacionMeteorologica> findByIdDatosEst(Long id);
+        Optional<DatosEstacionMeteorologica> findByIdDatosEst(Integer id);
 
         // Optional<DatosEstacion> obtenerDatosEstacionPorId(int id);
         // Optional<DatosEstacionDTO> datosId(int id);

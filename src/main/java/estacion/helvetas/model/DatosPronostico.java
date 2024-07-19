@@ -37,6 +37,9 @@ public class DatosPronostico {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date fecha = new Date(System.currentTimeMillis());
 
+    @Column(name = "delete")
+    private Boolean delete;
+
     @Override
     public String toString() {
         return "DatosPronostico [idPronostico=" + idPronostico +
@@ -46,6 +49,7 @@ public class DatosPronostico {
                 ", idZona=" + idZona +
                 // ", idFenologia=" + idFenologia +
                 ", fecha=" + fecha +
+                ", delete=" + delete +
                 "]";
     }
 

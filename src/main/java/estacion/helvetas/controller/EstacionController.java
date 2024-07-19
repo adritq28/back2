@@ -12,11 +12,16 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import estacion.helvetas.model.DatosEstacionHidrologica;
+import estacion.helvetas.model.DatosEstacionMeteorologica;
 import estacion.helvetas.model.Estacion;
 import estacion.helvetas.repository.EstacionRepository;
+import estacion.helvetas.service.db.DatosEstacionHidrologicaServiceJpa;
 import estacion.helvetas.service.db.DatosEstacionMeteorologicaServiceJpa;
 
 @CrossOrigin(origins = "*")
@@ -31,6 +36,8 @@ public class EstacionController {
     private EstacionRepository estacionRepository;
     @Autowired
     private DatosEstacionMeteorologicaServiceJpa estacionService;
+    @Autowired
+    private DatosEstacionHidrologicaServiceJpa estacionHidroService;
 
     // @GetMapping
     @GetMapping("/listaEstacion")
@@ -69,38 +76,139 @@ public class EstacionController {
 
     @GetMapping("/lista_meteorologica")
     public List<Map<String, Object>> listaEstacionMteorologica() {
-        List<Map<String, Object>> estacionMeorologica = new ArrayList<>();
-        List<Object[]> listaestacionMeorologica = estacionRepository.listaEstacionMeteorogica();
-        for (Object[] usuarioConEstacion : listaestacionMeorologica) {
+        List<Map<String, Object>> estacionHidrologica = new ArrayList<>();
+        List<Object[]> listaestacionHidrologica = estacionRepository.listaEstacionMeteorogica();
+        for (Object[] usuarioConEstacion : listaestacionHidrologica) {
             Map<String, Object> usuario = new HashMap<>();
             usuario.put("idEstacion", usuarioConEstacion[0]);
             usuario.put("nombreMunicipio", usuarioConEstacion[1]);
             usuario.put("nombreEstacion", usuarioConEstacion[2]);
             usuario.put("tipoEstacion", usuarioConEstacion[3]);
             usuario.put("codTipoEstacion", usuarioConEstacion[4]);
-            estacionMeorologica.add(usuario);
+            estacionHidrologica.add(usuario);
         }
-        return estacionMeorologica;
+        return estacionHidrologica;
     }
 
     @GetMapping("/lista_datos_meteorologica/{idEstacion}")
     public List<Map<String, Object>> listaDatosMeteorologica(@PathVariable int idEstacion) {
-        List<Map<String, Object>> estacionMeorologica = new ArrayList<>();
-        List<Object[]> listaestacionMeorologica = estacionRepository.listaDatosMeteorologica(idEstacion);
-        for (Object[] usuarioConEstacion : listaestacionMeorologica) {
-            Map<String, Object> usuario = new HashMap<>();
-            usuario.put("tempMax", usuarioConEstacion[0]);
-            usuario.put("tempMin", usuarioConEstacion[1]);
-            usuario.put("pcpn", usuarioConEstacion[2]);
-            usuario.put("tempAmb", usuarioConEstacion[3]);
-            usuario.put("dirViento", usuarioConEstacion[4]);
-            usuario.put("velViento", usuarioConEstacion[5]);
-            usuario.put("taevap", usuarioConEstacion[6]);
-            usuario.put("fechaReg", usuarioConEstacion[7]);
-            usuario.put("idDatosEst", usuarioConEstacion[8]);
-            estacionMeorologica.add(usuario);
+        List<Map<String, Object>> estacionMeteorologica = new ArrayList<>();
+        List<Object[]> listaEstacionMeteorologica = estacionRepository.listaDatosMeteorologica(idEstacion);
+
+        for (Object[] datos : listaEstacionMeteorologica) {
+            // Obtener el valor de 'delete'
+            Boolean delete = (Boolean) datos[9];
+
+            // Si 'delete' es true, no agregar el registro a la lista
+            if (delete == null || !delete) {
+                Map<String, Object> registro = new HashMap<>();
+                registro.put("tempMax", datos[0]);
+                registro.put("tempMin", datos[1]);
+                registro.put("pcpn", datos[2]);
+                registro.put("tempAmb", datos[3]);
+                registro.put("dirViento", datos[4]);
+                registro.put("velViento", datos[5]);
+                registro.put("taevap", datos[6]);
+                registro.put("fechaReg", datos[7]);
+                registro.put("idDatosEst", datos[8]);
+                registro.put("delete", delete);
+
+                estacionMeteorologica.add(registro);
+            }
         }
-        return estacionMeorologica;
+
+        return estacionMeteorologica;
+    }
+
+    // @PostMapping("/editar")
+    // public ResponseEntity<?> editarMeteorologica(@RequestBody
+    // DatosEstacionMeteorologica request) {
+    // estacionService.editarMeteorologica(request);
+    // return ResponseEntity.ok().body("Datos actualizados correctamente");
+    // }
+
+    @PostMapping("/editar")
+    public ResponseEntity<?> editarMeteorologica(@RequestBody DatosEstacionMeteorologica request) {
+        // Suponiendo que el ID está incluido en el request
+        if (request.getIdDatosEst() == null) {
+            return ResponseEntity.badRequest().body("ID es requerido para actualizar los datos");
+        }
+
+        estacionService.editarMeteorologica(request);
+        return ResponseEntity.ok().body("Datos actualizados correctamente");
+    }
+
+    @PostMapping("/editarHidrologica")
+    public ResponseEntity<?> editarHidrologica(@RequestBody DatosEstacionHidrologica request) {
+        // Suponiendo que el ID está incluido en el request
+        if (request.getIdHidrologica() == null) {
+            return ResponseEntity.badRequest().body("ID es requerido para actualizar los datos");
+        }
+
+        estacionHidroService.editarHidrologica(request);
+        return ResponseEntity.ok().body("Datos actualizados correctamente");
+    }
+
+    @DeleteMapping("/eliminar/{idDatosEst}")
+    public ResponseEntity<String> eliminarDatosEstacion(@PathVariable int idDatosEst) {
+        boolean eliminado = estacionService.eliminarDatosEstacion(idDatosEst);
+        if (eliminado) {
+            return ResponseEntity.ok("Datos meteorológicos eliminados correctamente");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("No se pudo eliminar los datos meteorológicos");
+        }
+    }
+
+    @DeleteMapping("/eliminarH/{idHidrologica}")
+    public ResponseEntity<String> eliminarHidroEstacion(@PathVariable int idHidrologica) {
+        boolean eliminado = estacionHidroService.eliminarDatosHidrologicaEstacion(idHidrologica);
+        if (eliminado) {
+            return ResponseEntity.ok("Datos meteorológicos eliminados correctamente");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("No se pudo eliminar los datos meteorológicos");
+        }
+    }
+
+    @GetMapping("/lista_hidrologica")
+    public List<Map<String, Object>> listaEstacionHidrologica() {
+        List<Map<String, Object>> estacionHidrologica = new ArrayList<>();
+        List<Object[]> listaestacionHidrologica = estacionRepository.listaEstacionHidrologica();
+        for (Object[] usuarioConEstacion : listaestacionHidrologica) {
+            Map<String, Object> usuario = new HashMap<>();
+            usuario.put("idEstacion", usuarioConEstacion[0]);
+            usuario.put("nombreMunicipio", usuarioConEstacion[1]);
+            usuario.put("nombreEstacion", usuarioConEstacion[2]);
+            usuario.put("tipoEstacion", usuarioConEstacion[3]);
+            usuario.put("codTipoEstacion", usuarioConEstacion[4]);
+            estacionHidrologica.add(usuario);
+        }
+        return estacionHidrologica;
+    }
+
+    @GetMapping("/lista_datos_hidrologica/{idEstacion}")
+    public List<Map<String, Object>> listaDatosHidrologica(@PathVariable int idEstacion) {
+        List<Map<String, Object>> estacionMeteorologica = new ArrayList<>();
+        List<Object[]> listaEstacionMeteorologica = estacionRepository.listaDatosHidrologica(idEstacion);
+
+        for (Object[] datos : listaEstacionMeteorologica) {
+            // Obtener el valor de 'delete'
+            Boolean delete = (Boolean) datos[3];
+
+            // Si 'delete' es true, no agregar el registro a la lista
+            if (delete == null || !delete) {
+                Map<String, Object> registro = new HashMap<>();
+                registro.put("limnimetro", datos[0]);
+                registro.put("fechaReg", datos[1]);
+                registro.put("idHidrologica", datos[2]);
+                registro.put("delete", delete);
+
+                estacionMeteorologica.add(registro);
+            }
+        }
+
+        return estacionMeteorologica;
     }
 
 }

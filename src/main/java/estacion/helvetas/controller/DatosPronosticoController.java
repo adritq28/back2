@@ -167,4 +167,44 @@ public class DatosPronosticoController {
         return closestDateData;
     }
 
+    @GetMapping("/lista_zonas")
+    public List<Map<String, Object>> listaZonas() {
+        List<Map<String, Object>> estacionHidrologica = new ArrayList<>();
+        List<Object[]> listaZona = datosPronosticoRepository.listaZonas();
+        for (Object[] usuarioConEstacion : listaZona) {
+            Map<String, Object> usuario = new HashMap<>();
+            usuario.put("idZona", usuarioConEstacion[0]);
+            usuario.put("nombreMunicipio", usuarioConEstacion[1]);
+            usuario.put("nombreZona", usuarioConEstacion[2]);
+            estacionHidrologica.add(usuario);
+        }
+        return estacionHidrologica;
+    }
+
+    @GetMapping("/lista_datos_zona/{idZona}")
+    public List<Map<String, Object>> listaDatosMeteorologica(@PathVariable int idZona) {
+        List<Map<String, Object>> estacionMeteorologica = new ArrayList<>();
+        List<Object[]> listaZona = datosPronosticoRepository.listaDatosZona(idZona);
+
+        for (Object[] datos : listaZona) {
+            // Obtener el valor de 'delete'
+            Boolean delete = (Boolean) datos[9];
+
+            // Si 'delete' es true, no agregar el registro a la lista
+            if (delete == null || !delete) {
+                Map<String, Object> registro = new HashMap<>();
+                registro.put("tempMax", datos[0]);
+                registro.put("tempMin", datos[1]);
+                registro.put("pcpn", datos[2]);
+                registro.put("fechaReg", datos[3]);
+                registro.put("idPronostico", datos[4]);
+                registro.put("delete", delete);
+
+                estacionMeteorologica.add(registro);
+            }
+        }
+
+        return estacionMeteorologica;
+    }
+
 }
