@@ -38,7 +38,9 @@ public class DatosPronostico {
     private Date fecha = new Date(System.currentTimeMillis());
 
     @Column(name = "delete")
-    private Boolean delete;
+    private Boolean delete = false;
+    @Column(name = "edit")
+    private Boolean edit = false;
 
     @Override
     public String toString() {
@@ -51,6 +53,14 @@ public class DatosPronostico {
                 ", fecha=" + fecha +
                 ", delete=" + delete +
                 "]";
+    }
+
+    public Boolean getDelete() {
+        return delete;
+    }
+
+    public void setDelete(Boolean delete) {
+        this.delete = delete;
     }
 
 }

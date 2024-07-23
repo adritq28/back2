@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import estacion.helvetas.model.DatosPronostico;
 import estacion.helvetas.model.DatosPronosticoDTO;
 import estacion.helvetas.repository.DatosPronosticoRepository;
+import estacion.helvetas.service.db.DatosPronosticoServiceJpa;
 
 @CrossOrigin(origins = "*")
 // @RestController
@@ -34,6 +36,8 @@ public class DatosPronosticoController {
 
     @Autowired
     private DatosPronosticoRepository datosPronosticoRepository;
+    @Autowired
+    private DatosPronosticoServiceJpa pronosticoService;
 
     @PostMapping("/addDatosPronostico")
     public ResponseEntity<String> guanrdarDatosPronostico(@RequestBody DatosPronostico datosPronostico) {
@@ -188,7 +192,7 @@ public class DatosPronosticoController {
 
         for (Object[] datos : listaZona) {
             // Obtener el valor de 'delete'
-            Boolean delete = (Boolean) datos[9];
+            Boolean delete = (Boolean) datos[5];
 
             // Si 'delete' es true, no agregar el registro a la lista
             if (delete == null || !delete) {
@@ -196,15 +200,43 @@ public class DatosPronosticoController {
                 registro.put("tempMax", datos[0]);
                 registro.put("tempMin", datos[1]);
                 registro.put("pcpn", datos[2]);
-                registro.put("fechaReg", datos[3]);
+                registro.put("fecha", datos[3]);
                 registro.put("idPronostico", datos[4]);
                 registro.put("delete", delete);
-
                 estacionMeteorologica.add(registro);
             }
         }
 
         return estacionMeteorologica;
+    }
+
+    @PostMapping("/editar")
+    public ResponseEntity<?> editarPronostico(@RequestBody DatosPronostico request) {
+        System.out.println("Request recibido: " + request);
+
+        if (request.getIdPronostico() == null) {
+            return ResponseEntity.badRequest().body("ID es requerido para actualizar los datos");
+        }
+
+        try {
+            pronosticoService.editarPronostico(request);
+            return ResponseEntity.ok().body("Datos actualizados correctamente");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al actualizar los datos: " + e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/eliminar/{idPronostico}")
+    public ResponseEntity<String> eliminarPronostico(@PathVariable int idPronostico) {
+        boolean eliminado = pronosticoService.eliminarPronostico(idPronostico);
+        if (eliminado) {
+            return ResponseEntity.ok("Datos meteorológicos eliminados correctamente");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("No se pudo eliminar los datos meteorológicos");
+        }
     }
 
 }

@@ -22,6 +22,7 @@ import estacion.helvetas.repository.UmbralRepository;
 import estacion.helvetas.repository.ZonaRepository;
 import estacion.helvetas.services.IDatosPronosticoService;
 //import estacion.helvetas.ResourceNotFoundException2;
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 @Primary
@@ -91,16 +92,18 @@ public class DatosPronosticoServiceJpa implements IDatosPronosticoService {
                     }
                 } else {
                     // Manejar el caso donde no se encuentra un umbral para la fenología
-                    alertas.add("No se encontró umbral para la fenología " + faseActual.getFase());
+                    alertas.add("No se encontrooo2ó umbral para la fenología " + faseActual.getFase());
                 }
             } else {
-                alertas.add("No se encontró fase fenológica para el pronóstico en la fecha " + pronostico.getFecha());
+                alertas.add(
+                        "No se encontr222ó fase fenológica para el pronóstico en la fecha " + pronostico.getFecha());
             }
         }
 
         return alertas;
     }
 
+    //////////////////////
     public String generarUltimaAlerta(int cultivoId) {
         Cultivo cultivo = cultivoRepository.findById(cultivoId)
                 .orElseThrow(() -> new ResourceNotFoundException2("Cultivo no encontrado"));
@@ -114,14 +117,18 @@ public class DatosPronosticoServiceJpa implements IDatosPronosticoService {
 
         for (DatosPronostico pronostico : pronosticos) {
             Fenologia faseActual = null;
+            fechaInicioFase = fechaSiembra; // Reiniciar fechaInicioFase para cada pronóstico
 
             // Determinar la fase fenológica actual
-            for (Fenologia fenologia : fenologias) {
-                // Usar Calendar para sumar días a la fecha
+            for (int i = 0; i < fenologias.size(); i++) {
+                Fenologia fenologia = fenologias.get(i);
+                Date fechaFinFase;
+
+                // Usar Calendar para sumar días a la fecha de inicio de fase
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(fechaInicioFase);
                 calendar.add(Calendar.DAY_OF_YEAR, fenologia.getNroDias());
-                Date fechaFinFase = calendar.getTime();
+                fechaFinFase = calendar.getTime();
 
                 if (!pronostico.getFecha().before(fechaInicioFase) && !pronostico.getFecha().after(fechaFinFase)) {
                     faseActual = fenologia;
@@ -137,26 +144,47 @@ public class DatosPronosticoServiceJpa implements IDatosPronosticoService {
                 if (optionalUmbral.isPresent()) {
                     Umbrales umbral = optionalUmbral.get();
 
-                    // Comparar con el pronóstico actual
-                    if (pronostico.getTempMax() > umbral.getTempMax()
-                            || pronostico.getTempMin() < umbral.getTempMin()
-                            || pronostico.getPcpn() > umbral.getPcpn()) {
+                    // Comparar con el pronóstico actual y construir la alerta con detalles
+                    StringBuilder alerta = new StringBuilder();
+                    boolean alertaGenerada = false;
+
+                    if (pronostico.getTempMax() > umbral.getTempMax()) {
+                        alerta.append("TempMax pronóstico: ").append(pronostico.getTempMax())
+                                .append(" supera umbral: ").append(umbral.getTempMax()).append(". ");
+                        alertaGenerada = true;
+                    }
+
+                    if (pronostico.getTempMin() < umbral.getTempMin()) {
+                        alerta.append("TempMin pronóstico: ").append(pronostico.getTempMin())
+                                .append(" está por debajo del umbral: ").append(umbral.getTempMin()).append(". ");
+                        alertaGenerada = true;
+                    }
+
+                    if (pronostico.getPcpn() > umbral.getPcpn()) {
+                        alerta.append("Pcpn pronóstico: ").append(pronostico.getPcpn())
+                                .append(" supera umbral: ").append(umbral.getPcpn()).append(". ");
+                        alertaGenerada = true;
+                    }
+
+                    if (alertaGenerada) {
                         ultimaAlerta = "Alerta para el cultivo " + cultivo.getNombre() + " en la fase "
                                 + faseActual.getFase() + " el día " + pronostico.getFecha() + " ID ZONA "
-                                + pronostico.getIdZona();
+                                + pronostico.getIdZona() + ". " + alerta.toString();
                     }
                 } else {
                     // Manejar el caso donde no se encuentra un umbral para la fenología
                     ultimaAlerta = "No se encontró umbral para la fenología " + faseActual.getFase();
                 }
             } else {
-                ultimaAlerta = "No se encontró fase fenológica para el pronóstico en la fecha " + pronostico.getFecha();
+                ultimaAlerta = "No se encontró fase fenológica para el pronóstico en la fecha "
+                        + pronostico.getFecha();
             }
         }
 
         return ultimaAlerta;
     }
 
+    //////////////////
     public List<String> generarAlertas2(int municipioId) {
         List<Zona> zonas = zonaRepository.findByIdMunicipio(municipioId);
         List<String> alertas = new ArrayList<>();
@@ -207,11 +235,11 @@ public class DatosPronosticoServiceJpa implements IDatosPronosticoService {
                             }
                         } else {
                             // Manejar el caso donde no se encuentra un umbral para la fenología
-                            alertas.add("No se encontró umbral para la fenología " + faseActual.getFase()
+                            alertas.add("No se encontróoo umbral para la fenología " + faseActual.getFase()
                                     + " en la zona " + zona.getNombre());
                         }
                     } else {
-                        alertas.add("No se encontró fase fenológica para el pronóstico en la fecha "
+                        alertas.add("No se encontr33333ó fase fenológica para el pronóstico en la fecha "
                                 + pronostico.getFecha() + " en la zona " + zona.getNombre());
                     }
                 }
@@ -240,6 +268,40 @@ public class DatosPronosticoServiceJpa implements IDatosPronosticoService {
     public DatosPronostico buscarPorId(int idPronostico) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'buscarPorId'");
+    }
+
+    public void editarPronostico(DatosPronostico request) {
+        // Buscar el registro existente por ID
+        Optional<DatosPronostico> existingRecord = datosPronosticoRepo.findByIdPronostico(request.getIdPronostico());
+
+        if (existingRecord.isPresent()) {
+            DatosPronostico pronostico = existingRecord.get();
+            // Actualizar los campos con los valores del request
+            pronostico.setTempMax(request.getTempMax());
+            pronostico.setTempMin(request.getTempMin());
+            pronostico.setPcpn(request.getPcpn());
+            pronostico.setFecha(request.getFecha());
+            pronostico.setEdit(true); // Establecer el campo editar en true
+            pronostico.setDelete(false); // Asumiendo que getDelete devuelve Boolean
+
+            // Guardar la entidad actualizada en la base de datos
+            datosPronosticoRepo.save(pronostico);
+        } else {
+            throw new EntityNotFoundException("Registro no encontrado con el ID: " + request.getIdPronostico());
+        }
+    }
+
+    public boolean eliminarPronostico(int idpronostico) {
+        Optional<DatosPronostico> datosPronosticoOptional = datosPronosticoRepo.findByIdPronostico(idpronostico);
+        if (datosPronosticoOptional.isPresent()) {
+            DatosPronostico datosPronostico = datosPronosticoOptional.get();
+            // Realizar el marcado de eliminación lógica aquí
+            datosPronostico.setDelete(true); // Suponiendo un campo 'eliminado' en tu entidad
+            datosPronosticoRepo.save(datosPronostico);
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

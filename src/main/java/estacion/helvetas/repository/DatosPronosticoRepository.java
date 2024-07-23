@@ -11,7 +11,7 @@ import estacion.helvetas.model.DatosPronostico;
 
 public interface DatosPronosticoRepository extends JpaRepository<DatosPronostico, Integer> {
 
-        Optional<DatosPronostico> findByIdPronostico(Long id);
+        Optional<DatosPronostico> findByIdPronostico(Integer id);
 
         List<DatosPronostico> findByIdZona(int idZona);
 

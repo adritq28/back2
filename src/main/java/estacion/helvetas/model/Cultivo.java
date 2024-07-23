@@ -10,6 +10,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.Data;
 
 @Data
@@ -35,9 +37,27 @@ public class Cultivo {
     @Column(name = "id_zona")
     private Integer idZona;
 
+    @Column(name = "delete")
+    private Boolean delete = false;
+    @Column(name = "edit")
+    private Boolean edit = false;
+
+    @Column(name = "fecha_reg")
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private Date fechaReg = new Date(System.currentTimeMillis());
+
     // Constructor sin argumentos requerido por Hibernate
     public Cultivo() {
         this.fechaSiembra = new Date(System.currentTimeMillis()); // Inicialización opcional aquí
+    }
+
+    public Boolean getDelete() {
+        return delete;
+    }
+
+    public void setDelete(Boolean delete) {
+        this.delete = delete;
     }
 
     // Getters y setters
