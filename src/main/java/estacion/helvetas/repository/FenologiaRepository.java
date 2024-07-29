@@ -21,7 +21,7 @@ public interface FenologiaRepository extends JpaRepository<Fenologia, Integer> {
 
         "SELECT m.idMunicipio,c.nombre, c.tipo, c.fechaSiembra, " +
                         "f.idFenologia, f.fase, f.descripcion, f.idCultivo, f.nroDias, " +
-                        "u.tempMax, u.tempMin, u.pcpn " +
+                        "u.tempMax, u.tempMin, u.pcpn, u.tempOpt, u.umbInf, u.umbSup " +
                         "FROM Umbrales u " +
                         "JOIN Fenologia f ON  f.idFenologia = u.idFenologia " +
                         "JOIN Cultivo c ON  f.idCultivo = c.idCultivo " +

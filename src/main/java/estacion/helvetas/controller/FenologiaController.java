@@ -44,6 +44,9 @@ public class FenologiaController {
             usuario.put("tempMax", usuarioConFenologia[9]);
             usuario.put("tempMin", usuarioConFenologia[10]);
             usuario.put("pcpn", usuarioConFenologia[11]);
+            usuario.put("tempOpt", usuarioConFenologia[12]);
+            usuario.put("umbInf", usuarioConFenologia[13]);
+            usuario.put("umbSup", usuarioConFenologia[14]);
             Fenologia.add(usuario);
         }
         return Fenologia;

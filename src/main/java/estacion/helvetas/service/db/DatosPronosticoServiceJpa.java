@@ -3,7 +3,9 @@ package estacion.helvetas.service.db;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,7 +106,7 @@ public class DatosPronosticoServiceJpa implements IDatosPronosticoService {
     }
 
     //////////////////////
-    public String generarUltimaAlerta(int cultivoId) {
+    public Map<String, String> generarUltimaAlerta(int cultivoId) {
         Cultivo cultivo = cultivoRepository.findById(cultivoId)
                 .orElseThrow(() -> new ResourceNotFoundException2("Cultivo no encontrado"));
         Date fechaSiembra = cultivo.getFechaSiembra();
@@ -112,12 +114,12 @@ public class DatosPronosticoServiceJpa implements IDatosPronosticoService {
         List<Fenologia> fenologias = fenologiaRepository.findByIdCultivo(cultivoId);
         List<DatosPronostico> pronosticos = pronosticoRepository.findByIdZona(cultivo.getIdZona());
 
-        String ultimaAlerta = null;
-        Date fechaInicioFase = fechaSiembra;
+        // Map para almacenar las alertas por cada parámetro
+        Map<String, String> alertas = new HashMap<>();
 
         for (DatosPronostico pronostico : pronosticos) {
             Fenologia faseActual = null;
-            fechaInicioFase = fechaSiembra; // Reiniciar fechaInicioFase para cada pronóstico
+            Date fechaInicioFase = fechaSiembra; // Reiniciar fechaInicioFase para cada pronóstico
 
             // Determinar la fase fenológica actual
             for (int i = 0; i < fenologias.size(); i++) {
@@ -144,44 +146,52 @@ public class DatosPronosticoServiceJpa implements IDatosPronosticoService {
                 if (optionalUmbral.isPresent()) {
                     Umbrales umbral = optionalUmbral.get();
 
-                    // Comparar con el pronóstico actual y construir la alerta con detalles
-                    StringBuilder alerta = new StringBuilder();
-                    boolean alertaGenerada = false;
-
+                    // Comparaciones para TempMax
                     if (pronostico.getTempMax() > umbral.getTempMax()) {
-                        alerta.append("TempMax pronóstico: ").append(pronostico.getTempMax())
-                                .append(" supera umbral: ").append(umbral.getTempMax()).append(". ");
-                        alertaGenerada = true;
+                        alertas.put("TempMax", "Alerta ROJA: TempMax pronóstico: " + pronostico.getTempMax()
+                                + " supera el TempMax del umbral: " + umbral.getTempMax() + " en la fase "
+                                + faseActual.getFase());
+                    } else if (pronostico.getTempMax() > umbral.getUmbSup()) {
+                        alertas.put("TempMax", "Alerta AMARILLA: TempMax pronóstico: " + pronostico.getTempMax()
+                                + " supera el UmbSup del umbral: " + umbral.getUmbSup() + " en la fase "
+                                + faseActual.getFase());
+                    } else if (pronostico.getTempMax() <= umbral.getTempOpt()) {
+                        alertas.put("TempMax", "Alerta VERDE: TempMax pronóstico: " + pronostico.getTempMax()
+                                + " está dentro del rango óptimo: " + umbral.getTempOpt() + " en la fase "
+                                + faseActual.getFase());
                     }
 
+                    // Comparaciones para TempMin
                     if (pronostico.getTempMin() < umbral.getTempMin()) {
-                        alerta.append("TempMin pronóstico: ").append(pronostico.getTempMin())
-                                .append(" está por debajo del umbral: ").append(umbral.getTempMin()).append(". ");
-                        alertaGenerada = true;
+                        alertas.put("TempMin", "Alerta ROJA: TempMin pronóstico: " + pronostico.getTempMin()
+                                + " está por debajo del TempMin del umbral: " + umbral.getTempMin() + " en la fase "
+                                + faseActual.getFase());
+                    } else if (pronostico.getTempMin() < umbral.getUmbInf()) {
+                        alertas.put("TempMin", "Alerta AMARILLA: TempMin pronóstico: " + pronostico.getTempMin()
+                                + " está por debajo del UmbInf del umbral: " + umbral.getUmbInf() + " en la fase "
+                                + faseActual.getFase());
+                    } else if (pronostico.getTempMin() >= umbral.getTempOpt()) {
+                        alertas.put("TempMin", "Alerta VERDE: TempMin pronóstico: " + pronostico.getTempMin()
+                                + " está dentro del rango óptimo: " + umbral.getTempOpt() + " en la fase "
+                                + faseActual.getFase());
                     }
 
+                    // Comparaciones para Pcpn
                     if (pronostico.getPcpn() > umbral.getPcpn()) {
-                        alerta.append("Pcpn pronóstico: ").append(pronostico.getPcpn())
-                                .append(" supera umbral: ").append(umbral.getPcpn()).append(". ");
-                        alertaGenerada = true;
+                        alertas.put("Pcpn", "Alerta ROJA: Pcpn pronóstico: " + pronostico.getPcpn()
+                                + " supera el Pcpn del umbral: " + umbral.getPcpn() + " en la fase "
+                                + faseActual.getFase());
                     }
 
-                    if (alertaGenerada) {
-                        ultimaAlerta = "Alerta para el cultivo " + cultivo.getNombre() + " en la fase "
-                                + faseActual.getFase() + " el día " + pronostico.getFecha() + " ID ZONA "
-                                + pronostico.getIdZona() + ". " + alerta.toString();
-                    }
                 } else {
-                    // Manejar el caso donde no se encuentra un umbral para la fenología
-                    ultimaAlerta = "No se encontró umbral para la fenología " + faseActual.getFase();
+                    alertas.put("General", "No se encontró umbral para la fenología " + faseActual.getFase());
                 }
             } else {
-                ultimaAlerta = "No se encontró fase fenológica para el pronóstico en la fecha "
-                        + pronostico.getFecha();
+                alertas.put("General", "No se encontró fase fenológica para el pronóstico en la fecha "
+                        + pronostico.getFecha());
             }
         }
-
-        return ultimaAlerta;
+        return alertas;
     }
 
     //////////////////

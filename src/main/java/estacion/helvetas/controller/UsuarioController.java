@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -147,12 +148,12 @@ public class UsuarioController {
                     // Construir el objeto JSON de respuesta
                     // Puedes personalizar los campos que deseas devolver
                     Map<String, Object> responseData = Map.of(
-                            "idUsuario", usuario.getIdUsuario(),
-                            "nombre", usuario.getNombre(),
-                            "apePat", usuario.getApePat(),
-                            "apeMat", usuario.getApeMat(),
-                            "ci", usuario.getCi(),
-                            "telefono", usuario.getTelefono());
+                            "idUsuario", Objects.requireNonNullElse(usuario.getIdUsuario(), ""),
+                            "nombre", Objects.requireNonNullElse(usuario.getNombre(), ""),
+                            "apePat", Objects.requireNonNullElse(usuario.getApePat(), ""),
+                            "apeMat", Objects.requireNonNullElse(usuario.getApeMat(), ""),
+                            "ci", Objects.requireNonNullElse(usuario.getCi(), ""),
+                            "telefono", Objects.requireNonNullElse(usuario.getTelefono(), ""));
                     return ResponseEntity.ok(responseData);
                 } else {
                     return ResponseEntity.ok("El usuario no es administrador.");
