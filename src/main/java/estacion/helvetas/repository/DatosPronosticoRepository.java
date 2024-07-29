@@ -24,7 +24,7 @@ public interface DatosPronosticoRepository extends JpaRepository<DatosPronostico
 
         @Query("select p.tempMax, p.tempMin, p.pcpn, p.fecha from Cultivo c " +
                         "join DatosPronostico p on c.idZona = p.idZona " +
-                        "where c.idCultivo = :idCultivo")
+                        "where c.idCultivo = :idCultivo ORDER BY p.idPronostico DESC limit 1")
         List<Object[]> pronosticoCultivo(@Param("idCultivo") int idCultivo);
 
         @Query("SELECT u.idUsuario, m.nombre, z.nombre, " +

@@ -102,15 +102,15 @@ public class EstacionController {
             // Si 'delete' es true, no agregar el registro a la lista
             if (delete == null || !delete) {
                 Map<String, Object> registro = new HashMap<>();
-                registro.put("tempMax", datos[0]);
-                registro.put("tempMin", datos[1]);
-                registro.put("pcpn", datos[2]);
-                registro.put("tempAmb", datos[3]);
-                registro.put("dirViento", datos[4]);
-                registro.put("velViento", datos[5]);
-                registro.put("taevap", datos[6]);
-                registro.put("fechaReg", datos[7]);
-                registro.put("idDatosEst", datos[8]);
+                registro.put("tempMax", datos[0] != null ? datos[0] : null);
+                registro.put("tempMin", datos[1] != null ? datos[1] : null);
+                registro.put("pcpn", datos[2] != null ? datos[2] : null);
+                registro.put("tempAmb", datos[3] != null ? datos[3] : null);
+                registro.put("dirViento", datos[4] != null ? datos[4] : null);
+                registro.put("velViento", datos[5] != null ? datos[5] : null);
+                registro.put("taevap", datos[6] != null ? datos[6] : null);
+                registro.put("fechaReg", datos[7] != null ? datos[7] : null);
+                registro.put("idDatosEst", datos[8] != null ? datos[8] : null);
                 registro.put("delete", delete);
 
                 estacionMeteorologica.add(registro);

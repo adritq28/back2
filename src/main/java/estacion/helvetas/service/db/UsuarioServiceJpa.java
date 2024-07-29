@@ -25,6 +25,10 @@ public class UsuarioServiceJpa implements IUsuarioService {
         return usuarioRepo.findTelefonoByIdUsuario(idUsuario);
     }
 
+    public String obtenerCiIdUsuario(int idUsuario) {
+        return usuarioRepo.findCiByIdUsuario(idUsuario);
+    }
+
     @Override
     public Usuario buscarPorIdUsuario(int idUsuario) {
         Optional<Usuario> usuario = usuarioRepo.findById(idUsuario);

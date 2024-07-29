@@ -91,6 +91,11 @@ public class UsuarioController {
         return usuarioService.obtenerTelefonoPorIdUsuario(idUsuario);
     }
 
+    @GetMapping("/ci/{idUsuario}")
+    public String obtenerCi(@PathVariable int idUsuario) {
+        return usuarioService.obtenerCiIdUsuario(idUsuario);
+    }
+
     // @PostMapping("/validar")
     // public ResponseEntity<?> validarUsuario(@RequestBody Usuario request) {
     // Optional<Usuario> usuarioOptional =

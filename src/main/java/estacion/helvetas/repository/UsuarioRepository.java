@@ -29,6 +29,9 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     @Query("SELECT u.telefono FROM Usuario u WHERE u.idUsuario = :idUsuario")
     String findTelefonoByIdUsuario(@Param("idUsuario") int idUsuario);
 
+    @Query("SELECT u.ci FROM Usuario u WHERE u.idUsuario = :idUsuario")
+    String findCiByIdUsuario(@Param("idUsuario") int idUsuario);
+
     Optional<Usuario> findByNombreUsuario(String nombreUsuario);
 
 }

@@ -26,7 +26,7 @@ public interface DatosEstacionMeteorologicaRepository extends JpaRepository<Dato
                         "JOIN Estacion t3 ON t2.idEstacion = t3.idEstacion " +
                         "JOIN DatosEstacionMeteorologica t4 ON t3.idEstacion = t4.idEstacion " +
                         "JOIN Municipio t5 ON t3.idMunicipio = t5.idMunicipio " +
-                        "WHERE t1.idUsuario = :idUsuario")
+                        "WHERE t1.idUsuario = :idUsuario order by t4.idDatosEst desc")
 
         List<Object[]> obtenerDatosEstacion(@Param("idUsuario") int idUsuario);
 
