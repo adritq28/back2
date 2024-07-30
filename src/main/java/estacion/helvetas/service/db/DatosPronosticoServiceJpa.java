@@ -110,42 +110,48 @@ public class DatosPronosticoServiceJpa implements IDatosPronosticoService {
         Cultivo cultivo = cultivoRepository.findById(cultivoId)
                 .orElseThrow(() -> new ResourceNotFoundException2("Cultivo no encontrado"));
         Date fechaSiembra = cultivo.getFechaSiembra();
-
         List<Fenologia> fenologias = fenologiaRepository.findByIdCultivo(cultivoId);
         List<DatosPronostico> pronosticos = pronosticoRepository.findByIdZona(cultivo.getIdZona());
-
         // Map para almacenar las alertas por cada parámetro
         Map<String, String> alertas = new HashMap<>();
+        float pcpnAcumulada = 0;
+        Map<Fenologia, Float> pcpnPorFase = new HashMap<>();
 
         for (DatosPronostico pronostico : pronosticos) {
             Fenologia faseActual = null;
             Date fechaInicioFase = fechaSiembra; // Reiniciar fechaInicioFase para cada pronóstico
-
             // Determinar la fase fenológica actual
+
             for (int i = 0; i < fenologias.size(); i++) {
                 Fenologia fenologia = fenologias.get(i);
                 Date fechaFinFase;
-
                 // Usar Calendar para sumar días a la fecha de inicio de fase
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(fechaInicioFase);
                 calendar.add(Calendar.DAY_OF_YEAR, fenologia.getNroDias());
                 fechaFinFase = calendar.getTime();
-
                 if (!pronostico.getFecha().before(fechaInicioFase) && !pronostico.getFecha().after(fechaFinFase)) {
                     faseActual = fenologia;
                     break;
                 }
-
                 fechaInicioFase = fechaFinFase;
             }
 
             if (faseActual != null) {
+                pcpnAcumulada += pronostico.getPcpn();
+                pcpnPorFase.put(faseActual, pcpnPorFase.getOrDefault(faseActual, 0f) + pronostico.getPcpn());
+
                 // Obtener los umbrales de la fase actual
                 Optional<Umbrales> optionalUmbral = umbralRepository.findByIdFenologia(faseActual.getIdFenologia());
+                // Obtener la precipitación normal de la fase actual
+                List<Object[]> normales = fenologiaRepository.obtenerNormal(faseActual.getIdFenologia());
+                float pcpnNormal = 0;
+                if (!normales.isEmpty()) {
+                    // Asumiendo que la consulta devuelve un solo valor de precipitación normal
+                    pcpnNormal = (float) normales.get(0)[0];
+                }
                 if (optionalUmbral.isPresent()) {
                     Umbrales umbral = optionalUmbral.get();
-
                     // Comparaciones para TempMax
                     if (pronostico.getTempMax() > umbral.getTempMax()) {
                         alertas.put("TempMax", "Alerta ROJA: TempMax pronóstico: " + pronostico.getTempMax()
@@ -160,7 +166,6 @@ public class DatosPronosticoServiceJpa implements IDatosPronosticoService {
                                 + " está dentro del rango óptimo: " + umbral.getTempOpt() + " en la fase "
                                 + faseActual.getFase());
                     }
-
                     // Comparaciones para TempMin
                     if (pronostico.getTempMin() < umbral.getTempMin()) {
                         alertas.put("TempMin", "Alerta ROJA: TempMin pronóstico: " + pronostico.getTempMin()
@@ -176,13 +181,17 @@ public class DatosPronosticoServiceJpa implements IDatosPronosticoService {
                                 + faseActual.getFase());
                     }
 
-                    // Comparaciones para Pcpn
-                    if (pronostico.getPcpn() > umbral.getPcpn()) {
-                        alertas.put("Pcpn", "Alerta ROJA: Pcpn pronóstico: " + pronostico.getPcpn()
+                    // Comparaciones para Pcpn acumulada
+                    float pcpnAcumuladaFaseActual = pcpnPorFase.get(faseActual);
+                    if (pcpnAcumuladaFaseActual > pcpnNormal) {
+                        alertas.put("Pcpn", "Alerta ROJA: Pcpn acumulada: " + pcpnAcumuladaFaseActual
+                                + " supera la Pcpn normal: " + pcpnNormal + " en la fase "
+                                + faseActual.getFase());
+                    } else if (pcpnAcumuladaFaseActual > umbral.getPcpn()) {
+                        alertas.put("Pcpn", "Alerta AMARILLA: Pcpn acumulada: " + pcpnAcumuladaFaseActual
                                 + " supera el Pcpn del umbral: " + umbral.getPcpn() + " en la fase "
                                 + faseActual.getFase());
                     }
-
                 } else {
                     alertas.put("General", "No se encontró umbral para la fenología " + faseActual.getFase());
                 }
@@ -191,10 +200,73 @@ public class DatosPronosticoServiceJpa implements IDatosPronosticoService {
                         + pronostico.getFecha());
             }
         }
+
+        // Añadir información de precipitación acumulada a las alertas
+        for (Map.Entry<Fenologia, Float> entry : pcpnPorFase.entrySet()) {
+            alertas.put("PcpnFase" + entry.getKey().getFase(), "Precipitación acumulada en la fase "
+                    + entry.getKey().getFase() + ": " + entry.getValue());
+        }
+        alertas.put("PcpnGeneral", "Precipitación acumulada total hasta la fase actual: " + pcpnAcumulada);
+
         return alertas;
     }
 
     //////////////////
+    public List<Map<String, Object>> generarPcpnFase(int cultivoId) {
+        Cultivo cultivo = cultivoRepository.findById(cultivoId)
+                .orElseThrow(() -> new ResourceNotFoundException2("Cultivo no encontrado"));
+        Date fechaSiembra = cultivo.getFechaSiembra();
+        List<Fenologia> fenologias = fenologiaRepository.findByIdCultivo(cultivoId);
+        List<DatosPronostico> pronosticos = pronosticoRepository.findByIdZona(cultivo.getIdZona());
+        float pcpnAcumulada = 0;
+        Map<Fenologia, Float> pcpnPorFase = new HashMap<>();
+
+        // Calcular la precipitación acumulada por fase
+        for (DatosPronostico pronostico : pronosticos) {
+            Fenologia faseActual = null;
+            Date fechaInicioFase = fechaSiembra; // Reiniciar fechaInicioFase para cada pronóstico
+
+            // Determinar la fase fenológica actual
+            for (int i = 0; i < fenologias.size(); i++) {
+                Fenologia fenologia = fenologias.get(i);
+                Date fechaFinFase;
+                // Usar Calendar para sumar días a la fecha de inicio de fase
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(fechaInicioFase);
+                calendar.add(Calendar.DAY_OF_YEAR, fenologia.getNroDias());
+                fechaFinFase = calendar.getTime();
+                if (!pronostico.getFecha().before(fechaInicioFase) && !pronostico.getFecha().after(fechaFinFase)) {
+                    faseActual = fenologia;
+                    break;
+                }
+                fechaInicioFase = fechaFinFase;
+            }
+
+            if (faseActual != null) {
+                pcpnAcumulada += pronostico.getPcpn();
+                pcpnPorFase.put(faseActual, pcpnPorFase.getOrDefault(faseActual, 0f) + pronostico.getPcpn());
+            }
+        }
+
+        // Convertir el mapa a una lista de Map<String, Object>
+        List<Map<String, Object>> pcpnFaseList = new ArrayList<>();
+        for (Map.Entry<Fenologia, Float> entry : pcpnPorFase.entrySet()) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("fase", entry.getKey().getFase());
+            map.put("pcpnAcumulada", entry.getValue());
+            pcpnFaseList.add(map);
+            System.out.println("faseee " + entry.getKey().getFase());
+            System.out.println("pcpnaccc " + entry.getValue());
+        }
+        // Añadir la precipitación acumulada total como un elemento adicional
+        Map<String, Object> totalMap = new HashMap<>();
+        totalMap.put("fase", "Total");
+        totalMap.put("pcpnAcumulada", pcpnAcumulada);
+        pcpnFaseList.add(totalMap);
+
+        return pcpnFaseList;
+    }
+
     public List<String> generarAlertas2(int municipioId) {
         List<Zona> zonas = zonaRepository.findByIdMunicipio(municipioId);
         List<String> alertas = new ArrayList<>();

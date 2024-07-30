@@ -24,7 +24,14 @@ public interface MunicipioRepository extends JpaRepository<Municipio, Integer> {
     // "WHERE m.idMunicipio = : idMunicipio")
     // List<Object[]> obtenerZonasMunicipio(@Param("idMunicipio") int idMunicipio);
 
-    @Query("SELECT m.idMunicipio, m.nombre, z.idZona, z.nombre FROM Municipio m JOIN Zona z ON m.idMunicipio = z.idMunicipio WHERE m.idMunicipio = :idMunicipio")
+    // @Query("SELECT m.idMunicipio, m.nombre, z.idZona, z.nombre FROM Municipio m
+    // JOIN Zona z ON m.idMunicipio = z.idMunicipio WHERE m.idMunicipio =
+    // :idMunicipio")
+    // List<Object[]> obtenerZonasMunicipio(@Param("idMunicipio") int idMunicipio);
+
+    @Query("SELECT m.idMunicipio, m.nombre, z.idZona, z.nombre, c.nombre, c.idCultivo " +
+            "FROM Municipio m JOIN Zona z ON m.idMunicipio = z.idMunicipio " +
+            "JOIN Cultivo c ON z.idZona = c.idZona WHERE m.idMunicipio = :idMunicipio")
     List<Object[]> obtenerZonasMunicipio(@Param("idMunicipio") int idMunicipio);
 
 }

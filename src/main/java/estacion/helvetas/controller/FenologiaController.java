@@ -25,10 +25,10 @@ public class FenologiaController {
     @Autowired
     private FenologiaRepository fenologiaRepository;
 
-    @GetMapping("/verFenologia/{id}")
-    public List<Map<String, Object>> obtemerFenologia(@PathVariable int id) {
+    @GetMapping("/verFenologia/{idCultivo}")
+    public List<Map<String, Object>> obtemerFenologia(@PathVariable int idCultivo) {
         List<Map<String, Object>> Fenologia = new ArrayList<>();
-        List<Object[]> listaUsuariosConFenologia = fenologiaRepository.obtenerFenologia(id);
+        List<Object[]> listaUsuariosConFenologia = fenologiaRepository.obtenerFenologia(idCultivo);
 
         for (Object[] usuarioConFenologia : listaUsuariosConFenologia) {
             Map<String, Object> usuario = new HashMap<>();

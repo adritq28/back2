@@ -36,6 +36,12 @@ public class AlertasController {
         return ResponseEntity.ok(alertas);
     }
 
+    @GetMapping("/pcpnFase/{cultivoId}")
+    public ResponseEntity<List<Map<String, Object>>> obtenerPcpnFase(@PathVariable int cultivoId) {
+        List<Map<String, Object>> pcpnFaseList = datosPronosticoService.generarPcpnFase(cultivoId);
+        return ResponseEntity.ok(pcpnFaseList);
+    }
+
     // Método para determinar el nivel de la alerta basado en el contenido
     private String determinarNivelAlerta(String alerta) {
         if (alerta.contains("ROJA")) {

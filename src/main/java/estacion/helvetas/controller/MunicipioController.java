@@ -34,6 +34,8 @@ public class MunicipioController {
             municipio.put("nombreMunicipio", municipioConZona[1]);
             municipio.put("idZona", municipioConZona[2]);
             municipio.put("nombreZona", municipioConZona[3]);
+            municipio.put("nombreCultivo", municipioConZona[4]);
+            municipio.put("idCultivo", municipioConZona[5]);
             municipioZona.add(municipio);
         }
         return municipioZona;

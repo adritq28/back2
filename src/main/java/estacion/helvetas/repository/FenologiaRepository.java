@@ -27,8 +27,12 @@ public interface FenologiaRepository extends JpaRepository<Fenologia, Integer> {
                         "JOIN Cultivo c ON  f.idCultivo = c.idCultivo " +
                         "JOIN Zona z ON c.idZona = z.idZona " +
                         "join Municipio m on m.idMunicipio = z.idMunicipio " +
-                        "where z.idZona = :idZona")
+                        "where c.idCultivo = :idCultivo")
 
-        List<Object[]> obtenerFenologia(@Param("idZona") int idZona);
+        List<Object[]> obtenerFenologia(@Param("idCultivo") int idCultivo);
+
+        @Query("select normal from Precipitacion where idFenologia = :idFenologia")
+
+        List<Object[]> obtenerNormal(@Param("idFenologia") int idFenologia);
 
 }
