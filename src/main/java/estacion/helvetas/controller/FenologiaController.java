@@ -47,6 +47,7 @@ public class FenologiaController {
             usuario.put("tempOpt", usuarioConFenologia[12]);
             usuario.put("umbInf", usuarioConFenologia[13]);
             usuario.put("umbSup", usuarioConFenologia[14]);
+            usuario.put("imagen", usuarioConFenologia[15]);
             Fenologia.add(usuario);
         }
         return Fenologia;

@@ -24,6 +24,8 @@ public class Fenologia {
     private Integer idCultivo;
     @Column(name = "nro_dias")
     private Integer nroDias;
+    @Column(name = "imagen")
+    private String imagen;
 
     @Override
     public String toString() {
@@ -32,6 +34,7 @@ public class Fenologia {
                 ", descripcion=" + descripcion +
                 ", idCultivo=" + idCultivo +
                 ", nroDias=" + nroDias +
+                ", imagen=" + imagen +
                 "]";
     }
 

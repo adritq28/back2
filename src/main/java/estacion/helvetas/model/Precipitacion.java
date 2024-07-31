@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.Data;
 
 @Data
@@ -22,6 +23,7 @@ public class Precipitacion {
     private Integer idFenologia;
 
     private String fase;
+    @Transient
     private float pcpnAcumulada;
 
     @Override

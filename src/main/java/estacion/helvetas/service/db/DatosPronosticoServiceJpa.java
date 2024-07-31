@@ -253,7 +253,7 @@ public class DatosPronosticoServiceJpa implements IDatosPronosticoService {
         for (Map.Entry<Fenologia, Float> entry : pcpnPorFase.entrySet()) {
             Map<String, Object> map = new HashMap<>();
             map.put("fase", entry.getKey().getFase());
-            map.put("pcpnAcumulada", entry.getValue());
+            map.put("pcpnAcumulada", entry.getValue() != null ? entry.getValue() : 0f);
             pcpnFaseList.add(map);
             System.out.println("faseee " + entry.getKey().getFase());
             System.out.println("pcpnaccc " + entry.getValue());
