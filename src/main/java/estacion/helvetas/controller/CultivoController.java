@@ -154,4 +154,18 @@ public class CultivoController {
         }
     }
 
+    @GetMapping("/fechas/{idCultivo}")
+    public List<Map<String, Object>> getFechasHistorico(@PathVariable int idCultivo) {
+        List<Map<String, Object>> cultivo = new ArrayList<>();
+        List<Object[]> listaZona = cultivoRepo.listaFechaHistorico(idCultivo);
+        for (Object[] datos : listaZona) {
+            Map<String, Object> registro = new HashMap<>();
+            registro.put("idHistFecha", datos[0]);
+            registro.put("fechaSiembra", datos[1]);
+            registro.put("idCultivo", datos[2]);
+            cultivo.add(registro);
+        }
+        return cultivo;
+    }
+
 }

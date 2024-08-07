@@ -121,7 +121,7 @@ public class DatosPronosticoServiceJpa implements IDatosPronosticoService {
             Fenologia faseActual = null;
             Date fechaInicioFase = fechaSiembra; // Reiniciar fechaInicioFase para cada pronóstico
             // Determinar la fase fenológica actual
-
+            System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
             for (int i = 0; i < fenologias.size(); i++) {
                 Fenologia fenologia = fenologias.get(i);
                 Date fechaFinFase;
@@ -140,7 +140,7 @@ public class DatosPronosticoServiceJpa implements IDatosPronosticoService {
             if (faseActual != null) {
                 pcpnAcumulada += pronostico.getPcpn();
                 pcpnPorFase.put(faseActual, pcpnPorFase.getOrDefault(faseActual, 0f) + pronostico.getPcpn());
-
+                System.out.println("bbbbbbbbbbbbbbbbbbbbbb");
                 // Obtener los umbrales de la fase actual
                 Optional<Umbrales> optionalUmbral = umbralRepository.findByIdFenologia(faseActual.getIdFenologia());
                 // Obtener la precipitación normal de la fase actual
@@ -151,6 +151,7 @@ public class DatosPronosticoServiceJpa implements IDatosPronosticoService {
                     pcpnNormal = (float) normales.get(0)[0];
                 }
                 if (optionalUmbral.isPresent()) {
+                    System.out.println("cccccccccccccccccc");
                     Umbrales umbral = optionalUmbral.get();
                     // Comparaciones para TempMax
                     if (pronostico.getTempMax() > umbral.getTempMax()) {

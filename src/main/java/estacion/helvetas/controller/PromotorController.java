@@ -31,15 +31,14 @@ public class PromotorController {
     @GetMapping("/lista_promotor")
     public List<Map<String, Object>> buscaPromotor() {
         List<Map<String, Object>> usuarioPromotor = new ArrayList<>();
-        List<Object[]> listausuarioPromotor = promotorRepository.buscarPromotores();
+        List<Object[]> listausuarioPromotor = promotorRepository.buscarPromotoresJPQL();
         for (Object[] usuarioConEstacion : listausuarioPromotor) {
             Map<String, Object> usuario = new HashMap<>();
             usuario.put("idUsuario", usuarioConEstacion[0]);
             usuario.put("nombreMunicipio", usuarioConEstacion[1]);
-            usuario.put("nombreZona", usuarioConEstacion[2]);
-            usuario.put("nombreCompleto", usuarioConEstacion[3]);
-            usuario.put("telefono", usuarioConEstacion[4]);
-            usuario.put("idZona", usuarioConEstacion[5]);
+            usuario.put("nombreCompleto", usuarioConEstacion[2]);
+            usuario.put("telefono", usuarioConEstacion[3]);
+            usuario.put("idMunicipio", usuarioConEstacion[4]);
             usuarioPromotor.add(usuario);
         }
         return usuarioPromotor;
@@ -55,11 +54,10 @@ public class PromotorController {
             usuario.put("nombreMunicipio", usuarioConEstacion[1]);
             usuario.put("nombreZona", usuarioConEstacion[2]);
             usuario.put("nombreCompleto", usuarioConEstacion[3]);
-            usuario.put("telefono", usuarioConEstacion[4]);
-            usuario.put("idZona", usuarioConEstacion[5]);
-            usuario.put("idCultivo", usuarioConEstacion[6]);
-            usuario.put("nombreCultivo", usuarioConEstacion[7]);
-            usuario.put("tipo", usuarioConEstacion[8]);
+            usuario.put("idZona", usuarioConEstacion[4]);
+            usuario.put("idCultivo", usuarioConEstacion[5]);
+            usuario.put("nombreCultivo", usuarioConEstacion[6]);
+            usuario.put("tipo", usuarioConEstacion[7]);
             usuarioPromotor.add(usuario);
         }
         return usuarioPromotor;

@@ -27,14 +27,27 @@ public interface DatosPronosticoRepository extends JpaRepository<DatosPronostico
                         "where c.idCultivo = :idCultivo ORDER BY p.fecha desc limit 1")
         List<Object[]> pronosticoCultivo(@Param("idCultivo") int idCultivo);
 
+        // @Query("SELECT u.idUsuario, m.nombre, z.nombre, " +
+        // "CONCAT(u.nombre, ' ', u.apePat, ' ', COALESCE(u.apeMat, '')), d.fecha, " +
+        // "d.tempMin, d.tempMax, d.pcpn " +
+        // "FROM Usuario u " +
+        // "JOIN Promotor p ON u.idUsuario = p.idUsuario " +
+        // "JOIN Zona z ON p.idZona = z.idZona " +
+        // "JOIN DatosPronostico d ON d.idZona = z.idZona " +
+        // "JOIN Municipio m ON m.idMunicipio = z.idMunicipio " +
+        // "WHERE u.idUsuario = :idUsuario AND z.idZona = :idZona")
+
+        // List<Object[]> obtenerDatosPronostico(@Param("idUsuario") int idUsuario,
+        // @Param("idZona") int idZona);
+
         @Query("SELECT u.idUsuario, m.nombre, z.nombre, " +
                         "CONCAT(u.nombre, ' ', u.apePat, ' ', COALESCE(u.apeMat, '')), d.fecha, " +
                         "d.tempMin, d.tempMax, d.pcpn " +
                         "FROM Usuario u " +
                         "JOIN Promotor p ON u.idUsuario = p.idUsuario " +
-                        "JOIN Zona z ON p.idZona = z.idZona " +
+                        "JOIN Municipio m ON m.idMunicipio = p.idMunicipio " +
+                        "JOIN Zona z ON m.idMunicipio = z.idMunicipio " +
                         "JOIN DatosPronostico d ON d.idZona = z.idZona " +
-                        "JOIN Municipio m ON m.idMunicipio = z.idMunicipio " +
                         "WHERE u.idUsuario = :idUsuario AND z.idZona = :idZona")
 
         List<Object[]> obtenerDatosPronostico(@Param("idUsuario") int idUsuario, @Param("idZona") int idZona);
