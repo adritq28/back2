@@ -39,6 +39,7 @@ public class PromotorController {
             usuario.put("nombreCompleto", usuarioConEstacion[2]);
             usuario.put("telefono", usuarioConEstacion[3]);
             usuario.put("idMunicipio", usuarioConEstacion[4]);
+            usuario.put("imagen", usuarioConEstacion[5]);
             usuarioPromotor.add(usuario);
         }
         return usuarioPromotor;
@@ -58,6 +59,8 @@ public class PromotorController {
             usuario.put("idCultivo", usuarioConEstacion[5]);
             usuario.put("nombreCultivo", usuarioConEstacion[6]);
             usuario.put("tipo", usuarioConEstacion[7]);
+            usuario.put("imagen", usuarioConEstacion[8]);
+            usuario.put("imagenP", usuarioConEstacion[9]);
             usuarioPromotor.add(usuario);
         }
         return usuarioPromotor;

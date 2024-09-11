@@ -23,7 +23,7 @@ public interface PromotorRepository extends JpaRepository<Usuario, Integer> {
         // "ORDER BY u.id_usuario ASC", nativeQuery = true)
         // List<Object[]> buscarPromotores();
 
-        @Query("SELECT u.idUsuario, m.nombre, CONCAT(u.nombre, ' ', u.apePat, ' ', COALESCE(u.apeMat, '')), u.telefono, m.idMunicipio "
+        @Query("SELECT u.idUsuario, m.nombre, CONCAT(u.nombre, ' ', u.apePat, ' ', COALESCE(u.apeMat, '')), u.telefono, m.idMunicipio, u.imagen "
                         +
                         "FROM Promotor p " +
                         "JOIN Municipio m ON p.idMunicipio = m.idMunicipio " +
@@ -31,18 +31,7 @@ public interface PromotorRepository extends JpaRepository<Usuario, Integer> {
                         "ORDER BY u.idUsuario ASC")
         List<Object[]> buscarPromotoresJPQL();
 
-        // @Query("SELECT u.idUsuario, m.nombre, z.nombre, " +
-        // "CONCAT(u.nombre, ' ', u.apePat, ' ', COALESCE(u.apeMat, '')), u.telefono, "
-        // +
-        // "p.idZona, c.idCultivo, c.nombre, c.tipo from Cultivo c " +
-        // "join Zona z on z.idZona=c.idZona " +
-        // "join Promotor p on p.idZona=z.idZona " +
-        // "join Usuario u on u.idUsuario=p.idUsuario " +
-        // "join Municipio m on m.idMunicipio=z.idMunicipio WHERE u.idUsuario =
-        // :idUsuario")
-        // List<Object[]> buscarZonas(@Param("idUsuario") int idUsuario);
-
-        @Query("select u.idUsuario, m.nombre, z.nombre, CONCAT(u.nombre, ' ', u.apePat, ' ', COALESCE(u.apeMat, '')), z.idZona, c.idCultivo, c.nombre, c.tipo "
+        @Query("select u.idUsuario, m.nombre, z.nombre, CONCAT(u.nombre, ' ', u.apePat, ' ', COALESCE(u.apeMat, '')), z.idZona, c.idCultivo, c.nombre, c.tipo, c.imagen, u.imagen "
                         +
                         "from Promotor p join Municipio m on p.idMunicipio=m.idMunicipio " +
                         "join Usuario u on u.idUsuario=p.idUsuario " +

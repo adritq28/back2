@@ -42,6 +42,11 @@ public class DatosPronostico {
     @Column(name = "edit")
     private Boolean edit = false;
 
+    @Column(name = "fecha_rango_decenal")
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private Date fechaRangoDecenal = new Date(System.currentTimeMillis());
+
     @Override
     public String toString() {
         return "DatosPronostico [idPronostico=" + idPronostico +
@@ -52,6 +57,7 @@ public class DatosPronostico {
                 // ", idFenologia=" + idFenologia +
                 ", fecha=" + fecha +
                 ", delete=" + delete +
+                ", fechaRangoDecenal=" + fechaRangoDecenal +
                 "]";
     }
 

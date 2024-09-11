@@ -27,6 +27,11 @@ public interface EstacionRepository extends JpaRepository<Estacion, Integer> {
                         "where e.idEstacion = :idEstacion and e.codTipoEstacion = true order by m.idDatosEst desc")
         List<Object[]> listaDatosMeteorologica(@Param("idEstacion") int idEstacion);
 
+        @Query("select CONCAT(u.nombre, ' ', u.apePat, ' ', COALESCE(u.apeMat, '')) from Observador o join Estacion e on o.idEstacion=e.idEstacion "
+                        +
+                        "join Usuario u on u.idUsuario=o.idUsuario where e.idEstacion = :idEstacion")
+        List<Object[]> obtNombreObservador(@Param("idEstacion") int idEstacion);
+
         @Query("select m.limnimetro, m.fechaReg, m.idHidrologica, m.delete " +
                         "from DatosEstacionHidrologica m join Estacion e on e.idEstacion=m.idEstacion " +
                         "where e.idEstacion = :idEstacion and e.codTipoEstacion = false order by m.idHidrologica desc")

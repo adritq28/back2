@@ -1,14 +1,14 @@
-package estacion.helvetas.repository;
+// package estacion.helvetas.repository;
 
-import java.util.Optional;
+// import java.util.Optional;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+// import org.springframework.data.jpa.repository.JpaRepository;
 
-import estacion.helvetas.model.Role;
+// import estacion.helvetas.model.Role;
 
-public interface RoleRepository extends JpaRepository<Role, Integer> {
+// public interface RoleRepository extends JpaRepository<Role, Integer> {
 
-    // List<persona> findAll();
+// // List<persona> findAll();
 
-    Optional<Role> findById(int idRole);
-}
+// Optional<Role> findById(int idRole);
+// }

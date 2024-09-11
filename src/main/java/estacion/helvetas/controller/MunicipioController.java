@@ -36,6 +36,34 @@ public class MunicipioController {
             municipio.put("nombreZona", municipioConZona[3]);
             municipio.put("nombreCultivo", municipioConZona[4]);
             municipio.put("idCultivo", municipioConZona[5]);
+            municipio.put("latitud", municipioConZona[6]);
+            municipio.put("longitud", municipioConZona[7]);
+            municipioZona.add(municipio);
+        }
+        return municipioZona;
+    }
+
+    @GetMapping("/zonaaa/{idMunicipio}")
+    public List<Map<String, Object>> buscaZonasPorCultivo(@PathVariable int idMunicipio) {
+        List<Map<String, Object>> municipioZona = new ArrayList<>();
+        List<Object[]> listamunicipioZona = municipioRepository.obtenerZonaPorCultivo(idMunicipio);
+        for (Object[] municipioConZona : listamunicipioZona) {
+            Map<String, Object> municipio = new HashMap<>();
+            municipio.put("nombreCultivo", municipioConZona[0]);
+            municipio.put("nombreMunicipio", municipioConZona[1]);
+            municipioZona.add(municipio);
+        }
+        return municipioZona;
+    }
+
+    @GetMapping("/cultivo/{idMunicipio}")
+    public List<Map<String, Object>> buscaCultivoPorMunicipio(@PathVariable int idMunicipio) {
+        List<Map<String, Object>> municipioZona = new ArrayList<>();
+        List<Object[]> listamunicipioZona = municipioRepository.obtenerCultivoPorMunicipio(idMunicipio);
+        for (Object[] municipioConZona : listamunicipioZona) {
+            Map<String, Object> municipio = new HashMap<>();
+            municipio.put("nombreMunicipio", municipioConZona[0]);
+            municipio.put("nombreCultivo", municipioConZona[1]);
             municipioZona.add(municipio);
         }
         return municipioZona;

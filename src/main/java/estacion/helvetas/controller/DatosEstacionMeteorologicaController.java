@@ -40,9 +40,6 @@ public class DatosEstacionMeteorologicaController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    // @Autowired
-    // private DatosEstacionDTORepository datosEstacionRepository2;
-
     @Autowired
     private DatosEstacionMeteorologicaServiceJpa estacionService;
 
@@ -166,6 +163,7 @@ public class DatosEstacionMeteorologicaController {
             Map<String, Object> usuario = new HashMap<>();
             usuario.put("idMunicipio", usuarioConEstacion[0]);
             usuario.put("nombreMunicipio", usuarioConEstacion[1]);
+            usuario.put("imagen", usuarioConEstacion[2]);
             usuariosConEstacion.add(usuario);
         }
         return usuariosConEstacion;

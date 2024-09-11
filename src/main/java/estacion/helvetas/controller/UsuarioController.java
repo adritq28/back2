@@ -5,12 +5,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,12 +25,8 @@ import estacion.helvetas.repository.UsuarioRepository;
 import estacion.helvetas.service.db.UsuarioServiceJpa;
 
 @CrossOrigin(origins = "*")
-// @RestController
 @RequestMapping("/usuario")
-// public class personaController {
-
 @RestController
-// @RequestMapping("/personas")
 public class UsuarioController {
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -37,7 +34,6 @@ public class UsuarioController {
     @Autowired
     private UsuarioServiceJpa usuarioService;
 
-    // @GetMapping
     @GetMapping("/sol")
     public List<Usuario> listarUsuario() {
         List<Usuario> a = usuarioRepository.findAll();
@@ -69,6 +65,7 @@ public class UsuarioController {
             usuario.put("telefono", usuarioConEstacion[5]);
             usuario.put("idEstacion", usuarioConEstacion[6]);
             usuario.put("codTipoEstacion", usuarioConEstacion[7]);
+            usuario.put("imagen", usuarioConEstacion[8]);
             usuariosConEstacion.add(usuario);
         }
         return usuariosConEstacion;
@@ -97,29 +94,6 @@ public class UsuarioController {
         return usuarioService.obtenerCiIdUsuario(idUsuario);
     }
 
-    // @PostMapping("/validar")
-    // public ResponseEntity<?> validarUsuario(@RequestBody Usuario request) {
-    // Optional<Usuario> usuarioOptional =
-    // usuarioService.findByIdUsuario(request.getIdUsuario());
-    // // System.out.println("-------- " + usuarioOptional.get().getApeMat());
-    // if (usuarioOptional.isPresent()) {
-    // System.out.println("aaaaaaaaaaaa");
-    // Usuario usuario = usuarioOptional.get();
-    // if (usuario.getPassword().equals(request.getPassword()) && usuario.isAdmin())
-    // {
-    // return ResponseEntity.ok().build();
-    // } else {
-    // return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    // }
-
-    // } else {
-    // // Si no se encuentra el usuario, devolver Unauthorized
-    // System.out.println("bbbbbbbbbbbb");
-    // return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    // }
-
-    // }
-
     @GetMapping("/sol/{id}")
     public ResponseEntity<Usuario> listarUsuarioPorId(@PathVariable Integer id) {
         Optional<Usuario> usuario = usuarioRepository.findByIdUsuario(id);
@@ -130,40 +104,30 @@ public class UsuarioController {
         }
     }
 
-    // CONTROL DE CALIDADAA
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
-        String nombreUsuario = loginRequest.get("nombreUsuario");
-        String password = loginRequest.get("password");
+    public UsuarioController(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
 
+    @GetMapping("/usuario-info")
+    public ResponseEntity<?> obtenerUsuarioAutenticado() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String nombreUsuario = authentication.getName();
         Optional<Usuario> optionalUsuario = usuarioRepository.findByNombreUsuario(nombreUsuario);
 
         if (optionalUsuario.isPresent()) {
             Usuario usuario = optionalUsuario.get();
-
-            // Verifica la contraseña
-            if (password.equals(usuario.getPassword())) {
-                // Preparar los datos del usuario a devolver
-                if (usuario.isAdmin()) {
-                    // Construir el objeto JSON de respuesta
-                    // Puedes personalizar los campos que deseas devolver
-                    Map<String, Object> responseData = Map.of(
-                            "idUsuario", Objects.requireNonNullElse(usuario.getIdUsuario(), ""),
-                            "nombre", Objects.requireNonNullElse(usuario.getNombre(), ""),
-                            "apePat", Objects.requireNonNullElse(usuario.getApePat(), ""),
-                            "apeMat", Objects.requireNonNullElse(usuario.getApeMat(), ""),
-                            "ci", Objects.requireNonNullElse(usuario.getCi(), ""),
-                            "telefono", Objects.requireNonNullElse(usuario.getTelefono(), ""));
-                    return ResponseEntity.ok(responseData);
-                } else {
-                    return ResponseEntity.ok("El usuario no es administrador.");
-                }
-            } else {
-                return ResponseEntity.status(HttpStatus.OK).body("Contraseña incorrecta.");
-            }
+            // Construir el objeto JSON de respuesta
+            Map<String, Object> responseData = Map.of(
+                    "idUsuario", usuario.getIdUsuario(),
+                    "nombre", usuario.getNombre(),
+                    "apePat", usuario.getApePat(),
+                    "apeMat", usuario.getApeMat(),
+                    "ci", usuario.getCi(),
+                    "telefono", usuario.getTelefono(),
+                    "admin", usuario.isAdmin());
+            return ResponseEntity.ok(responseData);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado en la base de datos.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado.");
         }
     }
-
 }

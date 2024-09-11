@@ -24,12 +24,14 @@ public class Umbrales {
     private Float pcpn;
     @Column(name = "id_fenologia")
     private Integer idFenologia;
-    @Column(name = "temp_opt")
-    private Float tempOpt;
+    @Column(name = "temp_opt_min")
+    private Float tempOptMin;
     @Column(name = "umb_inf")
     private Float umbInf;
     @Column(name = "umb_sup")
     private Float umbSup;
+    @Column(name = "temp_opt_max")
+    private Float tempOptMax;
 
     @Override
     public String toString() {

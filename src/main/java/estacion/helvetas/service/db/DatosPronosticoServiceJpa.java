@@ -110,7 +110,7 @@ public class DatosPronosticoServiceJpa implements IDatosPronosticoService {
         Cultivo cultivo = cultivoRepository.findById(cultivoId)
                 .orElseThrow(() -> new ResourceNotFoundException2("Cultivo no encontrado"));
         Date fechaSiembra = cultivo.getFechaSiembra();
-        List<Fenologia> fenologias = fenologiaRepository.findByIdCultivo(cultivoId);
+        List<Fenologia> fenologias = fenologiaRepository.findByIdCultivoOrdered(cultivoId);
         List<DatosPronostico> pronosticos = pronosticoRepository.findByIdZona(cultivo.getIdZona());
         // Map para almacenar las alertas por cada parámetro
         Map<String, String> alertas = new HashMap<>();
@@ -130,8 +130,12 @@ public class DatosPronosticoServiceJpa implements IDatosPronosticoService {
                 calendar.setTime(fechaInicioFase);
                 calendar.add(Calendar.DAY_OF_YEAR, fenologia.getNroDias());
                 fechaFinFase = calendar.getTime();
-                if (!pronostico.getFecha().before(fechaInicioFase) && !pronostico.getFecha().after(fechaFinFase)) {
+                if (!pronostico.getFechaRangoDecenal().before(fechaInicioFase)
+                        && !pronostico.getFechaRangoDecenal().after(fechaFinFase)) {
+
                     faseActual = fenologia;
+                    System.out.println("faseee  " + faseActual.getFase() + " fecha pronostico "
+                            + pronostico.getFechaRangoDecenal());
                     break;
                 }
                 fechaInicioFase = fechaFinFase;
@@ -155,30 +159,30 @@ public class DatosPronosticoServiceJpa implements IDatosPronosticoService {
                     Umbrales umbral = optionalUmbral.get();
                     // Comparaciones para TempMax
                     if (pronostico.getTempMax() > umbral.getTempMax()) {
-                        alertas.put("TempMax", "Alerta ROJA: TempMax pronóstico: " + pronostico.getTempMax()
+                        alertas.put("TempMax", "Alerta ROJA: TempMax pronostico: " + pronostico.getTempMax()
                                 + " supera el TempMax del umbral: " + umbral.getTempMax() + " en la fase "
                                 + faseActual.getFase());
                     } else if (pronostico.getTempMax() > umbral.getUmbSup()) {
-                        alertas.put("TempMax", "Alerta AMARILLA: TempMax pronóstico: " + pronostico.getTempMax()
+                        alertas.put("TempMax", "Alerta AMARILLA: TempMax pronostico: " + pronostico.getTempMax()
                                 + " supera el UmbSup del umbral: " + umbral.getUmbSup() + " en la fase "
                                 + faseActual.getFase());
-                    } else if (pronostico.getTempMax() <= umbral.getTempOpt()) {
-                        alertas.put("TempMax", "Alerta VERDE: TempMax pronóstico: " + pronostico.getTempMax()
-                                + " está dentro del rango óptimo: " + umbral.getTempOpt() + " en la fase "
+                    } else if (pronostico.getTempMax() <= umbral.getTempOptMax()) {
+                        alertas.put("TempMax", "Alerta VERDE: TempMax pronostico: " + pronostico.getTempMax()
+                                + " esta dentro del rango optimo: " + umbral.getTempOptMax() + " en la fase "
                                 + faseActual.getFase());
                     }
                     // Comparaciones para TempMin
                     if (pronostico.getTempMin() < umbral.getTempMin()) {
-                        alertas.put("TempMin", "Alerta ROJA: TempMin pronóstico: " + pronostico.getTempMin()
-                                + " está por debajo del TempMin del umbral: " + umbral.getTempMin() + " en la fase "
+                        alertas.put("TempMin", "Alerta ROJA: TempMin pronostico: " + pronostico.getTempMin()
+                                + " esta por debajo del TempMin del umbral: " + umbral.getTempMin() + " en la fase "
                                 + faseActual.getFase());
                     } else if (pronostico.getTempMin() < umbral.getUmbInf()) {
-                        alertas.put("TempMin", "Alerta AMARILLA: TempMin pronóstico: " + pronostico.getTempMin()
-                                + " está por debajo del UmbInf del umbral: " + umbral.getUmbInf() + " en la fase "
+                        alertas.put("TempMin", "Alerta AMARILLA: TempMin pronostico: " + pronostico.getTempMin()
+                                + " esta por debajo del UmbInf del umbral: " + umbral.getUmbInf() + " en la fase "
                                 + faseActual.getFase());
-                    } else if (pronostico.getTempMin() >= umbral.getTempOpt()) {
-                        alertas.put("TempMin", "Alerta VERDE: TempMin pronóstico: " + pronostico.getTempMin()
-                                + " está dentro del rango óptimo: " + umbral.getTempOpt() + " en la fase "
+                    } else if (pronostico.getTempMin() >= umbral.getTempOptMin()) {
+                        alertas.put("TempMin", "Alerta VERDE: TempMin pronostico: " + pronostico.getTempMin()
+                                + " esta dentro del rango óptimo: " + umbral.getTempOptMin() + " en la fase "
                                 + faseActual.getFase());
                     }
 
@@ -194,20 +198,20 @@ public class DatosPronosticoServiceJpa implements IDatosPronosticoService {
                                 + faseActual.getFase());
                     }
                 } else {
-                    alertas.put("General", "No se encontró umbral para la fenología " + faseActual.getFase());
+                    alertas.put("General", "No se encontro umbral para la fenologia " + faseActual.getFase());
                 }
             } else {
-                alertas.put("General", "No se encontró fase fenológica para el pronóstico en la fecha "
-                        + pronostico.getFecha());
+                alertas.put("General", "No se encontro fase fenologica para el pronostico en la fecha "
+                        + pronostico.getFechaRangoDecenal());
             }
         }
 
         // Añadir información de precipitación acumulada a las alertas
         for (Map.Entry<Fenologia, Float> entry : pcpnPorFase.entrySet()) {
-            alertas.put("PcpnFase" + entry.getKey().getFase(), "Precipitación acumulada en la fase "
+            alertas.put("PcpnFase" + entry.getKey().getFase(), "Precipitacion acumulada en la fase "
                     + entry.getKey().getFase() + ": " + entry.getValue());
         }
-        alertas.put("PcpnGeneral", "Precipitación acumulada total hasta la fase actual: " + pcpnAcumulada);
+        alertas.put("PcpnGeneral", "Precipitacion acumulada total hasta la fase actual: " + pcpnAcumulada);
 
         return alertas;
     }
@@ -385,6 +389,10 @@ public class DatosPronosticoServiceJpa implements IDatosPronosticoService {
         } else {
             return false;
         }
+    }
+
+    public int contarDatosHoy(int idZona) {
+        return datosPronosticoRepo.countDatosHoy(idZona);
     }
 
 }

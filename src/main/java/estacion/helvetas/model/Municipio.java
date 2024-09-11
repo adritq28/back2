@@ -21,10 +21,13 @@ public class Municipio {
     private String nombre;
     @Column(name = "id_provincia")
     private Integer idProvincia;
+    @Column(name = "imagen")
+    private String imagen;
 
     @Override
     public String toString() {
-        return "Municipio [idMunicipio=" + idMunicipio + ", nombre=" + nombre + ", idProvincia=" + idProvincia + "]";
+        return "Municipio [idMunicipio=" + idMunicipio + ", nombre=" + nombre + ", idProvincia=" + idProvincia
+                + ", imagen=" + imagen + "]";
     }
 
 }

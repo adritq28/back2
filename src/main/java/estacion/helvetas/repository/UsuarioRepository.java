@@ -18,7 +18,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     @Query("SELECT u.idUsuario AS idUsuario, " +
             "m.nombre AS minucipio, e.nombre AS estacion, e.tipoEstacion AS tipoestacion, " +
             "CONCAT(u.nombre, ' ', u.apePat, ' ', COALESCE(u.apeMat, '')) AS nombre, " +
-            "u.telefono AS telefono, e.idEstacion, e.codTipoEstacion " +
+            "u.telefono AS telefono, e.idEstacion, e.codTipoEstacion, u.imagen " +
             "FROM Usuario u " +
             "JOIN Observador o ON u.idUsuario = o.idUsuario " +
             "JOIN Estacion e ON o.idEstacion = e.idEstacion " + // Agrega un espacio antes de JOIN

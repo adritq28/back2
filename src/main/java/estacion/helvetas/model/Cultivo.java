@@ -47,6 +47,9 @@ public class Cultivo {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date fechaReg = new Date(System.currentTimeMillis());
 
+    @Column(name = "imagen")
+    private String imagen;
+
     // Constructor sin argumentos requerido por Hibernate
     public Cultivo() {
         this.fechaSiembra = new Date(System.currentTimeMillis()); // Inicialización opcional aquí

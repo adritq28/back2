@@ -22,9 +22,9 @@ public interface DatosPronosticoRepository extends JpaRepository<DatosPronostico
         // "WHERE z.idZona = :idZona")
         // List<Long> findUmbralesId(int idZona);
 
-        @Query("select p.tempMax, p.tempMin, p.pcpn, p.fecha from Cultivo c " +
+        @Query("select p.tempMax, p.tempMin, p.pcpn, p.fecha, p.fechaRangoDecenal from Cultivo c " +
                         "join DatosPronostico p on c.idZona = p.idZona " +
-                        "where c.idCultivo = :idCultivo ORDER BY p.fecha desc limit 1")
+                        "where c.idCultivo = :idCultivo ORDER BY p.fecha desc limit 10")
         List<Object[]> pronosticoCultivo(@Param("idCultivo") int idCultivo);
 
         // @Query("SELECT u.idUsuario, m.nombre, z.nombre, " +
@@ -67,8 +67,11 @@ public interface DatosPronosticoRepository extends JpaRepository<DatosPronostico
         @Query("select z.idZona, m.nombre, z.nombre from Municipio m join Zona z on m.idMunicipio=z.idMunicipio")
         List<Object[]> listaZonas();
 
-        @Query("select d.tempMax, d.tempMin, d.pcpn, d.fecha, d.idPronostico, d.delete " +
+        @Query("select d.tempMax, d.tempMin, d.pcpn, d.fecha, d.idPronostico, d.delete, d.fechaRangoDecenal " +
                         "from DatosPronostico d join Zona z on d.idZona = z.idZona where z.idZona = :idZona order by d.idPronostico desc")
         List<Object[]> listaDatosZona(@Param("idZona") int idZona);
+
+        @Query("SELECT COUNT(d) FROM DatosPronostico d WHERE FUNCTION('DATE', d.fecha) = CURRENT_DATE AND d.idZona = :idZona")
+        int countDatosHoy(@Param("idZona") int idZona);
 
 }

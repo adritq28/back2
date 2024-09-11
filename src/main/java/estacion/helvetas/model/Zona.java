@@ -21,6 +21,10 @@ public class Zona {
     private String nombre;
     @Column(name = "id_municipio")
     private Integer idMunicipio;
+    @Column(name = "latitud")
+    private Double latitud;
+    @Column(name = "longitud")
+    private Double longitud;
 
     @Override
     public String toString() {

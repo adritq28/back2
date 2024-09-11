@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -64,6 +65,7 @@ public class DatosPronosticoController {
             usuario.put("tempMin", usuarioConEstacion[1]);
             usuario.put("pcpn", usuarioConEstacion[2]);
             usuario.put("fecha", usuarioConEstacion[3]);
+            usuario.put("fechaRangoDecenal", usuarioConEstacion[4]);
             estacion.add(usuario);
         }
         return estacion;
@@ -203,6 +205,7 @@ public class DatosPronosticoController {
                 registro.put("fecha", datos[3]);
                 registro.put("idPronostico", datos[4]);
                 registro.put("delete", delete);
+                registro.put("fechaRangoDecenal", datos[6]);
                 estacionMeteorologica.add(registro);
             }
         }
@@ -237,6 +240,12 @@ public class DatosPronosticoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("No se pudo eliminar los datos meteorológicos");
         }
+    }
+
+    @GetMapping("/contarDatosHoy/{idZona}")
+    public ResponseEntity<?> contarDatosHoy(@PathVariable int idZona) {
+        long count = pronosticoService.contarDatosHoy(idZona);
+        return ResponseEntity.ok(Collections.singletonMap("count", count));
     }
 
 }

@@ -112,12 +112,25 @@ public class EstacionController {
                 registro.put("fechaReg", datos[7] != null ? datos[7] : null);
                 registro.put("idDatosEst", datos[8] != null ? datos[8] : null);
                 registro.put("delete", delete);
+                // registro.put("nombreCompleto", datos[10] != null ? datos[10] : null);
 
                 estacionMeteorologica.add(registro);
             }
         }
 
         return estacionMeteorologica;
+    }
+
+    @GetMapping("/nombre_observador/{idEstacion}")
+    public String obtenerNombreObservador(@PathVariable int idEstacion) {
+        List<Object[]> resultado = estacionRepository.obtNombreObservador(idEstacion);
+
+        // Suponiendo que obtienes un solo resultado y quieres devolverlo como String
+        if (!resultado.isEmpty()) {
+            return resultado.get(0)[0].toString();
+        } else {
+            return "Observador no encontrado";
+        }
     }
 
     // @PostMapping("/editar")
