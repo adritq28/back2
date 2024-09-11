@@ -1,21 +1,14 @@
-# Usar una imagen base con Maven y JDK
-FROM maven:3.8.4-openjdk-17 AS build
-
-# Configurar el directorio de trabajo
-WORKDIR /app
-
-# Copiar el código fuente al contenedor
-COPY . .
-
-# Construir el proyecto usando Maven
-RUN mvn clean package
-
-# Usar una imagen base para ejecutar la aplicación
+# Utiliza una imagen base de OpenJDK
 FROM openjdk:17-jdk-alpine
 
-# Copiar el JAR construido desde el contenedor de construcción
-COPY --from=build /app/target/helvetas-0.0.1-SNAPSHOT.jar /app.jar
+# Establece el directorio de trabajo dentro del contenedor
+WORKDIR /app
 
-# Ejecutar la aplicación
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+# Copia el archivo JAR de tu aplicación al contenedor
+COPY target/helvetas-0.0.1-SNAPSHOT.jar app.jar
 
+# Expone el puerto en el que tu aplicación correrá
+EXPOSE 8080
+
+# Comando para ejecutar la aplicación
+ENTRYPOINT ["java", "-jar", "app.jar"]
