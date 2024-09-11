@@ -1,14 +1,14 @@
-# Utiliza una imagen base de OpenJDK
-FROM openjdk:17-jdk-alpine
+# Usar una imagen base con OpenJDK
+FROM openjdk:21-jdk
 
-# Establece el directorio de trabajo dentro del contenedor
+# Directorio de trabajo en el contenedor
 WORKDIR /app
 
-# Copia el archivo JAR de tu aplicación al contenedor
+# Copiar el JAR del proyecto al contenedor
 COPY target/helvetas-0.0.1-SNAPSHOT.jar app.jar
 
-# Expone el puerto en el que tu aplicación correrá
+# Exponer el puerto en el que la aplicación escucha
 EXPOSE 8080
 
 # Comando para ejecutar la aplicación
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
