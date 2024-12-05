@@ -23,11 +23,10 @@ import estacion.helvetas.model.Estacion;
 import estacion.helvetas.repository.EstacionRepository;
 import estacion.helvetas.service.db.DatosEstacionHidrologicaServiceJpa;
 import estacion.helvetas.service.db.DatosEstacionMeteorologicaServiceJpa;
+import estacion.helvetas.service.db.EstacionServiceJpa;
 
 @CrossOrigin(origins = "*")
-// @RestController
 @RequestMapping("/estacion")
-// public class personaController {
 
 @RestController
 public class EstacionController {
@@ -39,10 +38,11 @@ public class EstacionController {
     @Autowired
     private DatosEstacionHidrologicaServiceJpa estacionHidroService;
 
-    // @GetMapping
+    @Autowired
+    private EstacionServiceJpa estacionServiceJpa;
+
     @GetMapping("/listaEstacion")
     public List<Estacion> listarEstacion() {
-
         List<Estacion> a = estacionRepository.findAll();
         return estacionRepository.findAll();
     }
@@ -61,7 +61,6 @@ public class EstacionController {
     public List<Map<String, Object>> obtenermunicipio(@PathVariable int id) {
         List<Map<String, Object>> estacion = new ArrayList<>();
         List<Object[]> listaUsuariosConEstacion = estacionRepository.obtenerEstacion(id);
-
         for (Object[] usuarioConEstacion : listaUsuariosConEstacion) {
             Map<String, Object> usuario = new HashMap<>();
             usuario.put("idMunicipio", usuarioConEstacion[0]);
@@ -96,10 +95,7 @@ public class EstacionController {
         List<Object[]> listaEstacionMeteorologica = estacionRepository.listaDatosMeteorologica(idEstacion);
 
         for (Object[] datos : listaEstacionMeteorologica) {
-            // Obtener el valor de 'delete'
             Boolean delete = (Boolean) datos[9];
-
-            // Si 'delete' es true, no agregar el registro a la lista
             if (delete == null || !delete) {
                 Map<String, Object> registro = new HashMap<>();
                 registro.put("tempMax", datos[0] != null ? datos[0] : null);
@@ -112,8 +108,6 @@ public class EstacionController {
                 registro.put("fechaReg", datos[7] != null ? datos[7] : null);
                 registro.put("idDatosEst", datos[8] != null ? datos[8] : null);
                 registro.put("delete", delete);
-                // registro.put("nombreCompleto", datos[10] != null ? datos[10] : null);
-
                 estacionMeteorologica.add(registro);
             }
         }
@@ -124,8 +118,6 @@ public class EstacionController {
     @GetMapping("/nombre_observador/{idEstacion}")
     public String obtenerNombreObservador(@PathVariable int idEstacion) {
         List<Object[]> resultado = estacionRepository.obtNombreObservador(idEstacion);
-
-        // Suponiendo que obtienes un solo resultado y quieres devolverlo como String
         if (!resultado.isEmpty()) {
             return resultado.get(0)[0].toString();
         } else {
@@ -133,31 +125,20 @@ public class EstacionController {
         }
     }
 
-    // @PostMapping("/editar")
-    // public ResponseEntity<?> editarMeteorologica(@RequestBody
-    // DatosEstacionMeteorologica request) {
-    // estacionService.editarMeteorologica(request);
-    // return ResponseEntity.ok().body("Datos actualizados correctamente");
-    // }
-
     @PostMapping("/editar")
     public ResponseEntity<?> editarMeteorologica(@RequestBody DatosEstacionMeteorologica request) {
-        // Suponiendo que el ID está incluido en el request
         if (request.getIdDatosEst() == null) {
             return ResponseEntity.badRequest().body("ID es requerido para actualizar los datos");
         }
-
         estacionService.editarMeteorologica(request);
         return ResponseEntity.ok().body("Datos actualizados correctamente");
     }
 
     @PostMapping("/editarHidrologica")
     public ResponseEntity<?> editarHidrologica(@RequestBody DatosEstacionHidrologica request) {
-        // Suponiendo que el ID está incluido en el request
         if (request.getIdHidrologica() == null) {
             return ResponseEntity.badRequest().body("ID es requerido para actualizar los datos");
         }
-
         estacionHidroService.editarHidrologica(request);
         return ResponseEntity.ok().body("Datos actualizados correctamente");
     }
@@ -204,12 +185,8 @@ public class EstacionController {
     public List<Map<String, Object>> listaDatosHidrologica(@PathVariable int idEstacion) {
         List<Map<String, Object>> estacionMeteorologica = new ArrayList<>();
         List<Object[]> listaEstacionMeteorologica = estacionRepository.listaDatosHidrologica(idEstacion);
-
         for (Object[] datos : listaEstacionMeteorologica) {
-            // Obtener el valor de 'delete'
             Boolean delete = (Boolean) datos[3];
-
-            // Si 'delete' es true, no agregar el registro a la lista
             if (delete == null || !delete) {
                 Map<String, Object> registro = new HashMap<>();
                 registro.put("limnimetro", datos[0]);
@@ -222,6 +199,49 @@ public class EstacionController {
         }
 
         return estacionMeteorologica;
+    }
+
+    @GetMapping(value = "/lista_estaciones", produces = "application/json;charset=UTF-8")
+    public List<Map<String, Object>> listaEstaciones() {
+        List<Map<String, Object>> estaciones = new ArrayList<>();
+        List<Object[]> listaestacionHidrologica = estacionRepository.listaEstaciones();
+        for (Object[] usuarioConEstacion : listaestacionHidrologica) {
+            Map<String, Object> usuario = new HashMap<>();
+            usuario.put("nombreMunicipio", usuarioConEstacion[0]);
+            usuario.put("nombreEstacion", usuarioConEstacion[1]);
+            usuario.put("tipoEstacion", usuarioConEstacion[2]);
+            usuario.put("idEstacion", usuarioConEstacion[3]);
+            usuario.put("idMunicipio", usuarioConEstacion[4]);
+            estaciones.add(usuario);
+        }
+        return estaciones;
+    }
+
+    @PostMapping("/editar_estacion")
+    public ResponseEntity<?> editarEstacion(@RequestBody Estacion request) {
+        if (request.getIdEstacion() == null) {
+            return ResponseEntity.badRequest().body("ID es requerido para actualizar los datos");
+        }
+        estacionServiceJpa.editarEstacion(request);
+        return ResponseEntity.ok().body("Datos actualizados correctamente");
+    }
+
+    @PostMapping("/addEstacion")
+    public ResponseEntity<Map<String, Object>> guardarEstacion(@RequestBody Estacion estacion) {
+        try {
+            Estacion nuevaEstacion = estacionRepository.save(estacion);
+
+            // Crear una respuesta JSON
+            Map<String, Object> response = new HashMap<>();
+            response.put("idEstacion", nuevaEstacion.getIdEstacion());
+            response.put("mensaje", "Estación guardada correctamente");
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error al guardar la estación: " + e.getMessage());
+            return new ResponseEntity<>(Map.of("message", "Error al crear usuario"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }

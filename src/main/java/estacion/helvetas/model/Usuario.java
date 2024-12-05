@@ -2,7 +2,9 @@ package estacion.helvetas.model;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +15,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.Data;
 
 @Data
@@ -42,6 +46,23 @@ public class Usuario implements UserDetails {
     @Column(name = "imagen")
     private String imagen;
 
+    @Column(name = "fecha_creacion")
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private Date fechaCreacion = new Date(System.currentTimeMillis());
+    @Column(name = "ultimo_acceso")
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private Date ultimoAcceso = new Date(System.currentTimeMillis());
+    @Column(name = "estado")
+    private boolean estado;
+    @Column(name = "rol")
+    private String rol;
+    @Column(name = "delete")
+    private Boolean delete = false;
+    @Column(name = "edit")
+    private Boolean edit = false;
+
     @Override
     public String toString() {
         return "Persona [idUsuario=" + idUsuario + ", nombreUsuario=" + nombreUsuario + ", nombre=" + nombre
@@ -53,7 +74,9 @@ public class Usuario implements UserDetails {
     }
 
     public Usuario(Integer idUsuario, String nombreUsuario, String nombre, String apePat, String apeMat,
-            String telefono, String ci, String password, boolean admin, String imagen) {
+            String telefono, String ci, String password, boolean admin, String imagen, Date fechaCreacion,
+            Date ultimoAcceso,
+            boolean estado, String rol, boolean delete, boolean edit) {
         this.idUsuario = idUsuario;
         this.nombreUsuario = nombreUsuario;
         this.nombre = nombre;
@@ -64,6 +87,13 @@ public class Usuario implements UserDetails {
         this.password = password;
         this.admin = admin;
         this.imagen = imagen;
+        this.fechaCreacion = fechaCreacion;
+        this.ultimoAcceso = ultimoAcceso;
+        this.estado = estado;
+        this.rol = rol;
+        this.delete = delete;
+        this.edit = edit;
+
     }
 
     @Override

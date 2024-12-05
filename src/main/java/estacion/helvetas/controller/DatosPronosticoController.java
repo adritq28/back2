@@ -29,7 +29,6 @@ import estacion.helvetas.repository.DatosPronosticoRepository;
 import estacion.helvetas.service.db.DatosPronosticoServiceJpa;
 
 @CrossOrigin(origins = "*")
-// @RestController
 @RequestMapping("/datos_pronostico")
 
 @RestController
@@ -89,7 +88,6 @@ public class DatosPronosticoController {
                 Pronostico.setTempMin((Float) resultado[5]);
                 Pronostico.setTempMax((Float) resultado[6]);
                 Pronostico.setPcpn((Float) resultado[7]);
-                // Pronostico.setIdFenologia((int) resultado[8]);
                 Pronosticoes.add(Pronostico);
             }
         }
@@ -99,14 +97,12 @@ public class DatosPronosticoController {
         return ResponseEntity.ok(Pronosticoes);
     }
 
-    @GetMapping("/comparacion/{idFenologia}/{idZona}")
-    public Map<String, Object> comparacionDatos(@PathVariable int idFenologia, @PathVariable int idZona) {
-        List<Object[]> listaPronostico = datosPronosticoRepository.comparacionDatosPronostico(idFenologia, idZona);
-
+    @GetMapping("/comparacion/{idFenologia}/{idCultivo}")
+    public Map<String, Object> comparacionDatos(@PathVariable int idFenologia, @PathVariable int idCultivo) {
+        List<Object[]> listaPronostico = datosPronosticoRepository.comparacionDatosPronostico(idFenologia, idCultivo);
         Map<String, Object> closestDateData = null;
         long minDifference = Long.MAX_VALUE;
         LocalDate currentDate = LocalDate.now();
-
         for (Object[] usuarioConFenologia : listaPronostico) {
             Map<String, Object> usuario = new HashMap<>();
             usuario.put("idPronostico", usuarioConFenologia[0]);
@@ -125,19 +121,15 @@ public class DatosPronosticoController {
             usuario.put("tempMinPronostico", usuarioConFenologia[13]);
             usuario.put("pcpnPronostico", usuarioConFenologia[14]);
 
-            // Convertir la fecha a LocalDate
             LocalDate fecha = ((Date) usuarioConFenologia[9]).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             long difference = Math.abs(ChronoUnit.DAYS.between(currentDate, fecha));
 
-            // Comparar los valores y determinar la alerta
             Float tempMax = (Float) usuarioConFenologia[6];
             Float tempMin = (Float) usuarioConFenologia[7];
             Float pcpn = (Float) usuarioConFenologia[8];
-
             Float tempMaxPronostico = (Float) usuarioConFenologia[12];
             Float tempMinPronostico = (Float) usuarioConFenologia[13];
             Float pcpnPronostico = (Float) usuarioConFenologia[14];
-
             String alerta = "";
 
             if (Math.abs(tempMax - tempMaxPronostico) > 5 ||
@@ -151,19 +143,7 @@ public class DatosPronosticoController {
             } else {
                 alerta = "SIN ALERTA";
             }
-
-            // if (diferenciaTempMax > 5 || diferenciaTempMin > 5 || diferenciaPcpn > 5) {
-            // alerta = "ALERTA ROJA";
-            // } else if (diferenciaTempMax > 3 || diferenciaTempMin > 3 || diferenciaPcpn >
-            // 3) {
-            // alerta = "ALERTA AMARILLA";
-            // } else {
-            // alerta = "SIN ALERTA";
-            // }
-
             usuario.put("alerta", alerta);
-
-            // Comprobar si esta diferencia de fecha es la más pequeña que hemos visto
             if (difference < minDifference) {
                 minDifference = difference;
                 closestDateData = usuario;
@@ -187,16 +167,12 @@ public class DatosPronosticoController {
         return estacionHidrologica;
     }
 
-    @GetMapping("/lista_datos_zona/{idZona}")
-    public List<Map<String, Object>> listaDatosMeteorologica(@PathVariable int idZona) {
+    @GetMapping("/lista_datos_zona/{idCultivo}")
+    public List<Map<String, Object>> listaDatosMeteorologica(@PathVariable int idCultivo) {
         List<Map<String, Object>> estacionMeteorologica = new ArrayList<>();
-        List<Object[]> listaZona = datosPronosticoRepository.listaDatosZona(idZona);
-
+        List<Object[]> listaZona = datosPronosticoRepository.listaDatosZona(idCultivo);
         for (Object[] datos : listaZona) {
-            // Obtener el valor de 'delete'
             Boolean delete = (Boolean) datos[5];
-
-            // Si 'delete' es true, no agregar el registro a la lista
             if (delete == null || !delete) {
                 Map<String, Object> registro = new HashMap<>();
                 registro.put("tempMax", datos[0]);
@@ -216,11 +192,9 @@ public class DatosPronosticoController {
     @PostMapping("/editar")
     public ResponseEntity<?> editarPronostico(@RequestBody DatosPronostico request) {
         System.out.println("Request recibido: " + request);
-
         if (request.getIdPronostico() == null) {
             return ResponseEntity.badRequest().body("ID es requerido para actualizar los datos");
         }
-
         try {
             pronosticoService.editarPronostico(request);
             return ResponseEntity.ok().body("Datos actualizados correctamente");

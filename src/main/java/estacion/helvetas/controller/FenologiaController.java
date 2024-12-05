@@ -15,9 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import estacion.helvetas.repository.FenologiaRepository;
 
 @CrossOrigin(origins = "*")
-// @RestController
 @RequestMapping("/fenologia")
-// public class personaController {
 
 @RestController
 public class FenologiaController {
@@ -29,7 +27,6 @@ public class FenologiaController {
     public List<Map<String, Object>> obtemerFenologia(@PathVariable int idCultivo) {
         List<Map<String, Object>> Fenologia = new ArrayList<>();
         List<Object[]> listaUsuariosConFenologia = fenologiaRepository.obtenerFenologia(idCultivo);
-
         for (Object[] usuarioConFenologia : listaUsuariosConFenologia) {
             Map<String, Object> usuario = new HashMap<>();
             usuario.put("idMunicipio", usuarioConFenologia[0]);

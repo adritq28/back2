@@ -28,9 +28,7 @@ import estacion.helvetas.repository.UsuarioRepository;
 import estacion.helvetas.service.db.DatosEstacionMeteorologicaServiceJpa;
 
 @CrossOrigin(origins = "*")
-// @RestController
 @RequestMapping("/datosEstacion")
-// public class personaController {
 
 @RestController
 public class DatosEstacionMeteorologicaController {
@@ -39,13 +37,10 @@ public class DatosEstacionMeteorologicaController {
     private DatosEstacionMeteorologicaRepository datosEstacionRepository;
     @Autowired
     private UsuarioRepository usuarioRepository;
-
     @Autowired
     private DatosEstacionMeteorologicaServiceJpa estacionService;
-
     @Autowired
     private DatosEstacionMeteorologicaServiceJpa serviceEstacion;
-
     @Autowired
     private DatosEstacionMeteorologicaRepository datosRepository;
     @Autowired
@@ -55,7 +50,6 @@ public class DatosEstacionMeteorologicaController {
     public ResponseEntity<List<DatosEstacionDTO>> obtenerDatosObservador(@PathVariable int id) {
         List<Object[]> resultados = datosEstacionRepository.obtenerDatosEstacion(id);
         List<DatosEstacionDTO> observadores = new ArrayList<>();
-
         for (Object[] resultado : resultados) {
             int idUsuario = (int) resultado[0];
             if (idUsuario == id) {
@@ -78,7 +72,6 @@ public class DatosEstacionMeteorologicaController {
                 observadores.add(observador);
             }
         }
-
         if (observadores.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -111,11 +104,9 @@ public class DatosEstacionMeteorologicaController {
                 observadores.add(observador);
             }
         }
-
         if (observadores.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-
         return ResponseEntity.ok(observadores);
     }
 
@@ -146,11 +137,9 @@ public class DatosEstacionMeteorologicaController {
                 municipio.add(observador);
             }
         }
-
         if (municipio.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-
         return ResponseEntity.ok(municipio);
     }
 
@@ -158,7 +147,6 @@ public class DatosEstacionMeteorologicaController {
     public List<Map<String, Object>> obtenermunicipio() {
         List<Map<String, Object>> usuariosConEstacion = new ArrayList<>();
         List<Object[]> listaUsuariosConEstacion = muniRepository.obtenerIdNombreMunicipios();
-
         for (Object[] usuarioConEstacion : listaUsuariosConEstacion) {
             Map<String, Object> usuario = new HashMap<>();
             usuario.put("idMunicipio", usuarioConEstacion[0]);
@@ -173,7 +161,6 @@ public class DatosEstacionMeteorologicaController {
     public List<Map<String, Object>> obtenerEstaciones() {
         List<Map<String, Object>> usuariosConEstacion = new ArrayList<>();
         List<Object[]> listaUsuariosConEstacion = muniRepository.obtenerIdNombreMunicipios();
-
         for (Object[] usuarioConEstacion : listaUsuariosConEstacion) {
             Map<String, Object> usuario = new HashMap<>();
             usuario.put("idMunicipio", usuarioConEstacion[0]);
@@ -195,10 +182,7 @@ public class DatosEstacionMeteorologicaController {
 
     @GetMapping("/listaDatosEstacion")
     public List<DatosEstacionMeteorologica> listarDatosEstacion() {
-
         List<DatosEstacionMeteorologica> a = datosEstacionRepository.findAll();
-        // Pageable pageable = PageRequest.of(0, 10);
-        // return datosEstacionRepository.findAll(pageable).getContent();
         return datosEstacionRepository.findAll();
     }
 
@@ -206,7 +190,6 @@ public class DatosEstacionMeteorologicaController {
     public ResponseEntity<String> guardarDatosEstacion(@RequestBody DatosEstacionMeteorologica datosEstacion) {
         System.out.println("--------" + datosEstacion.toString());
         try {
-            // persona.setIdEstacion(100000);
             System.out.println("--+++++--" + datosEstacion.toString());
             DatosEstacionMeteorologica nuevodatosEstacion = datosEstacionRepository.save(datosEstacion);
             return ResponseEntity.status(HttpStatus.CREATED)
@@ -232,10 +215,6 @@ public class DatosEstacionMeteorologicaController {
             @RequestBody DatosEstacionMeteorologica datosEstacionActualizado) {
         DatosEstacionMeteorologica datosEstacion = serviceEstacion.obtenerDatosEstacionPorId(id);
         if (datosEstacion != null) {
-            // Actualizar los campos del objeto datosEstacion con los datos
-
-            // en datosEstacionActualizado
-            // System.out.println("++++++" + estacion.toString());
             datosEstacion.setTempMax(datosEstacionActualizado.getTempMax());
             datosEstacion.setTempMin(datosEstacionActualizado.getTempMin());
             datosEstacion.setTempAmb(datosEstacionActualizado.getTempAmb());
@@ -246,7 +225,6 @@ public class DatosEstacionMeteorologicaController {
             datosEstacion.setVelViento(datosEstacionActualizado.getVelViento());
             datosEstacion.setIdEstacion(datosEstacionActualizado.getIdEstacion());
 
-            // Guardar los cambios en la base de datos
             serviceEstacion.guardarDatosEstacion(datosEstacion);
             return ResponseEntity.ok(datosEstacion);
         } else {
@@ -275,9 +253,6 @@ public class DatosEstacionMeteorologicaController {
                 datosEstacion.setDirViento(datosEstacionActualizados.getDirViento());
                 datosEstacion.setVelViento(datosEstacionActualizados.getVelViento());
                 datosEstacion.setIdEstacion(datosEstacionActualizados.getIdEstacion());
-                // Actualiza otros campos según sea necesario
-
-                // Guarda la estación actualizada en la base de datos
                 DatosEstacionMeteorologica datosEstacionActualizada = datosEstacionRepository.save(datosEstacion);
                 return ResponseEntity.status(HttpStatus.OK)
                         .body("Datos de la estación actualizados con éxito. ID: "

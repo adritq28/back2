@@ -30,13 +30,10 @@ public class DatosPronostico {
     private Float pcpn;
     @Column(name = "id_zona")
     private Integer idZona;
-    // @Column(name = "id_fenologia")
-    // private Integer idFenologia;
     @Column(name = "fecha")
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date fecha = new Date(System.currentTimeMillis());
-
     @Column(name = "delete")
     private Boolean delete = false;
     @Column(name = "edit")
@@ -46,6 +43,8 @@ public class DatosPronostico {
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date fechaRangoDecenal = new Date(System.currentTimeMillis());
+    @Column(name = "id_cultivo")
+    private Integer idCultivo;
 
     @Override
     public String toString() {
@@ -54,10 +53,10 @@ public class DatosPronostico {
                 ", tempMin=" + tempMin +
                 ", pcpn=" + pcpn +
                 ", idZona=" + idZona +
-                // ", idFenologia=" + idFenologia +
                 ", fecha=" + fecha +
                 ", delete=" + delete +
                 ", fechaRangoDecenal=" + fechaRangoDecenal +
+                ", idCultivo=" + idCultivo +
                 "]";
     }
 

@@ -20,9 +20,7 @@ import estacion.helvetas.model.DatosEstacionHidrologica;
 import estacion.helvetas.repository.DatosEstacionHidrologicaRepository;
 
 @CrossOrigin(origins = "*")
-// @RestController
 @RequestMapping("/datosHidrologica")
-// public class personaController {
 
 @RestController
 public class DatosEstacionHidrologicaController {
@@ -93,7 +91,6 @@ public class DatosEstacionHidrologicaController {
                 observadores.add(observador);
             }
         }
-
         if (observadores.isEmpty()) {
             return ResponseEntity.notFound().build();
         }

@@ -13,7 +13,7 @@ public interface EstacionRepository extends JpaRepository<Estacion, Integer> {
 
         // List<persona> findAll();
 
-        Optional<Estacion> findById(int idEstacion);
+        Optional<Estacion> findByIdEstacion(int idEstacion);
 
         @Query("SELECT e.idMunicipio, e.nombre, e.tipoEstacion, e.codTipoEstacion, e.idEstacion FROM Estacion e WHERE idMunicipio = :idMunicipio")
         List<Object[]> obtenerEstacion(@Param("idMunicipio") int idMunicipio);
@@ -40,5 +40,9 @@ public interface EstacionRepository extends JpaRepository<Estacion, Integer> {
         @Query("select e.idEstacion, m.nombre, e.nombre, e.tipoEstacion, e.codTipoEstacion " +
                         "from Municipio m join Estacion e on m.idMunicipio = e.idMunicipio where e.codTipoEstacion = false")
         List<Object[]> listaEstacionHidrologica();
+
+        @Query("select m.nombre, e.nombre, e.tipoEstacion, e.idEstacion, m.idMunicipio from Estacion e " +
+                        "join Municipio m ON e.idMunicipio=m.idMunicipio")
+        List<Object[]> listaEstaciones();
 
 }

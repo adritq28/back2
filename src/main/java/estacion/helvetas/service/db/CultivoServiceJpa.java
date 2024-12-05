@@ -32,20 +32,17 @@ public class CultivoServiceJpa implements ICultivoService {
     }
 
     public void editarCultivo(Cultivo request) {
-        // Buscar el registro existente por ID
         Optional<Cultivo> existingRecord = cultivoRepository.findById(request.getIdCultivo());
 
         if (existingRecord.isPresent()) {
             Cultivo cultivo = existingRecord.get();
-            // Actualizar los campos con los valores del request
             cultivo.setNombre(request.getNombre());
             cultivo.setFechaSiembra(request.getFechaSiembra());
             cultivo.setFechaReg(request.getFechaReg());
             cultivo.setTipo(request.getTipo());
-            cultivo.setEdit(true); // Establecer el campo editar en true
-            cultivo.setDelete(false); // Asumiendo que getDelete devuelve Boolean
+            cultivo.setEdit(request.getEdit() != null ? request.getEdit() : false);
+            cultivo.setDelete(request.getDelete() != null ? request.getDelete() : false);
 
-            // Guardar la entidad actualizada en la base de datos
             cultivoRepository.save(cultivo);
         } else {
             throw new EntityNotFoundException("Registro no encontrado con el ID: " + request.getIdCultivo());
@@ -56,8 +53,7 @@ public class CultivoServiceJpa implements ICultivoService {
         Optional<Cultivo> CultivoOptional = cultivoRepository.findById(idCultivo);
         if (CultivoOptional.isPresent()) {
             Cultivo Cultivo = CultivoOptional.get();
-            // Realizar el marcado de eliminación lógica aquí
-            Cultivo.setDelete(true); // Suponiendo un campo 'eliminado' en tu entidad
+            Cultivo.setDelete(true);
             cultivoRepository.save(Cultivo);
             return true;
         } else {

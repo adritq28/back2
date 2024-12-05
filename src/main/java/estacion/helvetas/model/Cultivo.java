@@ -39,6 +39,7 @@ public class Cultivo {
 
     @Column(name = "delete")
     private Boolean delete = false;
+
     @Column(name = "edit")
     private Boolean edit = false;
 
@@ -50,9 +51,11 @@ public class Cultivo {
     @Column(name = "imagen")
     private String imagen;
 
-    // Constructor sin argumentos requerido por Hibernate
+    @Column(name = "nombre_fecha_siembra")
+    private String nombreFechaSiembra;
+
     public Cultivo() {
-        this.fechaSiembra = new Date(System.currentTimeMillis()); // Inicialización opcional aquí
+        this.fechaSiembra = new Date(System.currentTimeMillis());
     }
 
     public Boolean getDelete() {
@@ -62,7 +65,4 @@ public class Cultivo {
     public void setDelete(Boolean delete) {
         this.delete = delete;
     }
-
-    // Getters y setters
-    // toString() y otros métodos si es necesario
 }

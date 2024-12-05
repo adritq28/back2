@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import estacion.helvetas.model.DatosPronostico;
 import estacion.helvetas.service.db.DatosPronosticoServiceJpa;
 
 @CrossOrigin(origins = "*")
@@ -31,8 +32,6 @@ public class AlertasController {
     @GetMapping("/ultima/{cultivoId}")
     public ResponseEntity<Map<String, String>> obtenerUltimaAlerta(@PathVariable int cultivoId) {
         Map<String, String> alertas = datosPronosticoService.generarUltimaAlerta(cultivoId);
-
-        // Enviar el mapa como respuesta
         return ResponseEntity.ok(alertas);
     }
 
@@ -42,7 +41,16 @@ public class AlertasController {
         return ResponseEntity.ok(pcpnFaseList);
     }
 
-    // Método para determinar el nivel de la alerta basado en el contenido
+    @GetMapping("/pronostico_fase/{cultivoId}")
+    public List<DatosPronostico> obtenerPronosticosFase(@PathVariable int cultivoId) {
+        return datosPronosticoService.pronosticosFase(cultivoId);
+    }
+
+    @GetMapping("/fase/{cultivoId}")
+    public int obtenerFaseActual(@PathVariable int cultivoId) {
+        return datosPronosticoService.obtenerFaseActual(cultivoId);
+    }
+
     private String determinarNivelAlerta(String alerta) {
         if (alerta.contains("ROJA")) {
             return "rojo";
@@ -53,11 +61,5 @@ public class AlertasController {
         } else {
             return "no definido";
         }
-    }
-
-    @GetMapping("/dos/{idMunicipio}")
-    public ResponseEntity<List<String>> generarAlertas2(@PathVariable int idMunicipio) {
-        List<String> alertas = datosPronosticoService.generarAlertas2(idMunicipio);
-        return ResponseEntity.ok(alertas);
     }
 }

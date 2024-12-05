@@ -29,7 +29,8 @@ public interface MunicipioRepository extends JpaRepository<Municipio, Integer> {
         // :idMunicipio")
         // List<Object[]> obtenerZonasMunicipio(@Param("idMunicipio") int idMunicipio);
 
-        @Query("SELECT m.idMunicipio, m.nombre, z.idZona, z.nombre, c.nombre, c.idCultivo, z.latitud, z.longitud " +
+        @Query("SELECT m.idMunicipio, m.nombre, z.idZona, z.nombre, c.nombre, c.idCultivo, z.latitud, z.longitud, c.nombreFechaSiembra "
+                        +
                         "FROM Municipio m JOIN Zona z ON m.idMunicipio = z.idMunicipio " +
                         "JOIN Cultivo c ON z.idZona = c.idZona WHERE m.idMunicipio = :idMunicipio")
         List<Object[]> obtenerZonasMunicipio(@Param("idMunicipio") int idMunicipio);
@@ -43,5 +44,8 @@ public interface MunicipioRepository extends JpaRepository<Municipio, Integer> {
                         "join Cultivo c on z.idZona=c.idZona " +
                         "join Municipio m on z.idMunicipio=m.idMunicipio where z.idMunicipio=:idMunicipio order by c.idCultivo asc")
         List<Object[]> obtenerCultivoPorMunicipio(@Param("idMunicipio") int idMunicipio);
+
+        @Query("select m.nombre, m.idMunicipio from Municipio m ")
+        List<Object[]> listaMunicipio();
 
 }

@@ -32,8 +32,6 @@ public class DatosEstacionMeteorologica {
     private Float pcpn;
     @Column(name = "taevap")
     private Float taevap;
-    // @Column(name = "fecha_reg")
-    // private Timestamp fechaReg;
     @Column(name = "dir_viento")
     private String dirViento;
     @Column(name = "vel_viento")
@@ -74,10 +72,4 @@ public class DatosEstacionMeteorologica {
     public void setDelete(Boolean delete) {
         this.delete = delete;
     }
-
-    // public void setFechados(Date fechados) {
-    // this.fechados = new Date(); // Establecer la fecha y hora de creación al
-    // momento de asignar el valor
-    // }
-
 }

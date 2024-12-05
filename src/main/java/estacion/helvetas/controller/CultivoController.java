@@ -30,7 +30,6 @@ import estacion.helvetas.repository.CultivoRepository;
 import estacion.helvetas.service.db.CultivoServiceJpa;
 
 @CrossOrigin(origins = "*")
-// @RestController
 @RestController
 @RequestMapping("/cultivos")
 public class CultivoController {
@@ -41,42 +40,15 @@ public class CultivoController {
     @Autowired
     private CultivoRepository cultivoRepo;
 
-    // @PutMapping("/{idCultivo}/fecha_siembra")
-    // public ResponseEntity<Cultivo> actualizarFechaSiembra(
-    // @PathVariable int idCultivo,
-    // @RequestBody Timestamp nuevaFechaSiembra) {
-    // Cultivo cultivoActualizado = cultivoService.actualizarFechaSiembra(idCultivo,
-    // nuevaFechaSiembra);
-    // return ResponseEntity.ok(cultivoActualizado);
-    // }
-
-    // @PutMapping("/{id}/fecha-siembra")
-    // public ResponseEntity<Cultivo> actualizarFechaSiembra(@PathVariable int id,
-    // @RequestParam("fechaSiembra") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    // Date nuevaFechaSiembra) {
-
-    // Optional<Cultivo> optionalCultivo = cultivoRepo.findById(id);
-    // if (optionalCultivo.isPresent()) {
-    // Cultivo cultivo = optionalCultivo.get();
-    // cultivo.setFechaSiembra(nuevaFechaSiembra);
-    // cultivoRepo.save(cultivo);
-    // return ResponseEntity.ok(cultivo);
-    // } else {
-    // return ResponseEntity.notFound().build();
-    // }
-    // }
-
     @PostMapping("/addCultivo")
-    public ResponseEntity<String> guanrdarCultivo(@RequestBody Cultivo Cultivo) {
-        System.out.println("--------" + Cultivo.toString());
+    public ResponseEntity<String> guardarCultivo(@RequestBody Cultivo cultivo) {
         try {
-            System.out.println("--+++++--" + Cultivo.toString());
-            Cultivo nuevoCultivo = cultivoRepo.save(Cultivo);
+            Cultivo nuevoCultivo = cultivoRepo.save(cultivo);
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .body("datos estacion guardada con ID: " + nuevoCultivo.getIdCultivo());
+                    .body("Cultivo guardado con ID: " + nuevoCultivo.getIdCultivo());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error al guardar la datos estacion: " + e.getMessage());
+                    .body("Error al guardar el cultivo: " + e.getMessage());
         }
     }
 
@@ -104,12 +76,8 @@ public class CultivoController {
     public List<Map<String, Object>> listaDatosFechaSiembra(@PathVariable int idZona) {
         List<Map<String, Object>> cultivo = new ArrayList<>();
         List<Object[]> listaZona = cultivoRepo.listaDatosFechaSiembra(idZona);
-
         for (Object[] datos : listaZona) {
-            // Obtener el valor de 'delete'
             Boolean delete = (Boolean) datos[3];
-
-            // Si 'delete' es true, no agregar el registro a la lista
             if (delete == null || !delete) {
                 Map<String, Object> registro = new HashMap<>();
                 registro.put("fechaSiembra", datos[0]);
@@ -118,21 +86,19 @@ public class CultivoController {
                 registro.put("delete", delete);
                 registro.put("fechaReg", datos[4]);
                 registro.put("tipo", datos[5]);
+                registro.put("nombreFechaSiembra", datos[6]);
                 cultivo.add(registro);
             }
         }
-
         return cultivo;
     }
 
     @PostMapping("/editar")
     public ResponseEntity<?> editarCultivo(@RequestBody Cultivo request) {
         System.out.println("Request recibido: " + request);
-
         if (request.getIdCultivo() == null) {
             return ResponseEntity.badRequest().body("ID es requerido para actualizar los datos");
         }
-
         try {
             cultivoService.editarCultivo(request);
             return ResponseEntity.ok().body("Datos actualizados correctamente");

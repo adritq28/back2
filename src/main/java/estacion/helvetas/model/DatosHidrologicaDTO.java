@@ -166,6 +166,4 @@ public class DatosHidrologicaDTO {
     public void setCodTipoEstacion(boolean codTipoEstacion) {
         this.codTipoEstacion = codTipoEstacion;
     }
-
-    // Getters y setters
 }
